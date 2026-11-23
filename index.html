@@ -2,280 +2,506 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>Viña Grande, antes y después</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;1,8..60,400&display=swap">
+<title>Viña Grande, antes y después · Reverso</title>
+<link rel="icon" href="marca/reverso-iso.svg" type="image/svg+xml">
 <style>
+/* Estética de la web de Reverso (webs/reverso/assets/css/style.css): papel con grano, Archivo en tres voces,
+   verdes del logo, fichas blancas muy redondeadas y rótulos como los del mapa de «Cómo llegar». */
+@font-face {
+  font-family: 'Archivo'; font-style: normal; font-weight: 100 900; font-stretch: 62% 125%; font-display: swap;
+  src: url(marca/archivo-normal-latin.woff2) format('woff2');
+}
 :root {
-  --fondo: #FAF9F5;
-  --panel: #F0EEE6;
-  --superficie: #FFFFFF;
-  --texto: #141413;
-  --texto-2: #5E5D59;
-  --borde: #E8E6DC;
-  --acento: #D97757;
-  --acento-hover: #C6613F;
-  --chip: rgba(250, 249, 245, .82);
-  --chip-texto: #141413;
-  --f-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
-  --f-ui: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --re: #47782C;          /* acción */
+  --re-osc: #325220;
+  --re-claro: #E7F3DF;
+  --tinta: #222F1E;       /* letras del logo */
+  --suave: rgba(34, 47, 30, .66);
+  --linea: rgba(34, 47, 30, .12);
+  --papel: #F8F7F2;
+  --salvia: #E5ECDE;
+  --arena: #EFE5D3;
+  --hoja: #B0D07A;        /* símbolo del logo */
+  --radio: 22px;
+  --ease: cubic-bezier(.22, 1, .36, 1);
   color-scheme: light;
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --fondo: #262624; --panel: #30302E; --superficie: #1F1E1D; --texto: #FAF9F5; --texto-2: #C2C0B6;
-    --borde: #3E3E38; --chip: rgba(38, 38, 36, .78); --chip-texto: #FAF9F5; color-scheme: dark;
-  }
-}
-* { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
+*, *::before, *::after { box-sizing: border-box; }
+html { overflow-x: clip; -webkit-text-size-adjust: 100%; }
 body {
-  margin: 0; background: var(--fondo); color: var(--texto);
-  font-family: var(--f-serif); font-size: 1.0625rem; line-height: 1.6;
-  padding: 0 max(16px, env(safe-area-inset-right, 0px)) 4rem max(16px, env(safe-area-inset-left, 0px));
+  margin: 0; background: var(--papel); color: var(--tinta);
+  font-family: 'Archivo', system-ui, sans-serif; font-weight: 420; font-size: 1rem; line-height: 1.5;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
 }
-a { color: var(--acento); }
-a:hover { color: var(--acento-hover); }
-.col { max-width: 700px; margin: 0 auto; }
-.ancho { max-width: 1040px; margin: 0 auto; }
-.pagina { display: grid; gap: clamp(2.5rem, 6vw, 3.5rem); padding-top: clamp(1.75rem, 5vw, 3.5rem); }
+body::after {
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 90; opacity: .05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+img, svg, video { display: block; max-width: 100%; }
+h1, h2, h3, p, ul, dl, dd, figure { margin: 0; padding: 0; }
+ul { list-style: none; }
+button { font: inherit; color: inherit; cursor: pointer; background: none; border: 0; padding: 0; }
+:focus-visible { outline: 2.5px solid var(--re); outline-offset: 3px; border-radius: 8px; }
 
-/* cabecera */
-.cabecera { display: grid; gap: .9rem; }
-.meta { margin: 0; font: 400 .8125rem/1.4 var(--f-ui); color: var(--texto-2); }
-h1 { margin: 0; font-weight: 500; font-size: clamp(1.9rem, 5.5vw, 2.5rem); line-height: 1.15; letter-spacing: -.01em; text-wrap: balance; }
-.entrada { margin: 0; color: var(--texto-2); }
+.caja { width: 100%; max-width: 1180px; margin: 0 auto; padding: 0 max(16px, env(safe-area-inset-left, 0px)) 0 max(16px, env(safe-area-inset-right, 0px)); }
+.texto { max-width: 46rem; }
 
-/* cifras */
-.cifras { margin: 0; background: var(--panel); border-radius: 14px; padding: .4rem 1.1rem; }
-.cifras > div { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .1rem 1rem; padding: .7rem 0; }
-.cifras > div + div { border-top: 1px solid var(--borde); }
-.cifras dt { font: 400 .875rem/1.4 var(--f-ui); color: var(--texto-2); }
-.cifras dd { margin: 0; font: 500 .9375rem/1.4 var(--f-ui); text-align: right; font-variant-numeric: tabular-nums; }
-.cifras dd small { display: block; font-weight: 400; font-size: .8125rem; color: var(--texto-2); }
-.fuente { margin: .7rem 0 0; font: 400 .8125rem/1.5 var(--f-ui); color: var(--texto-2); }
+/* voces (una sola familia: Archivo) */
+.titular { font-weight: 760; font-stretch: 84%; letter-spacing: -.028em; line-height: .96; text-wrap: balance; }
+.etiqueta { font-weight: 650; font-stretch: 112%; text-transform: uppercase; letter-spacing: .09em; font-size: .7rem; line-height: 1.3; }
+.cifra { font-weight: 280; font-stretch: 75%; font-variant-numeric: tabular-nums lining-nums; letter-spacing: -.02em; }
 
-/* vistas */
-.vista { display: grid; gap: .85rem; }
-.vista-cab { display: grid; gap: .4rem; }
-h2 { margin: 0; font-weight: 500; font-size: clamp(1.25rem, 3.4vw, 1.4rem); line-height: 1.25; text-wrap: balance; }
-.vista-cab p { margin: 0; color: var(--texto-2); }
+/* barra */
+.barra { padding-top: 14px; }
+.logo { display: inline-flex; align-items: center; padding: 9px 16px 9px 12px; margin-left: -4px; border-radius: 999px; background: rgba(255, 255, 255, .7); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .85), 0 10px 26px -18px rgba(34, 47, 30, .55); }
+.logo img { height: 26px; width: auto; }
 
-.ba {
+/* portada */
+.portada { padding: clamp(40px, 9vw, 96px) 0 clamp(28px, 6vw, 56px); display: grid; gap: 18px; }
+.portada .etiqueta { color: var(--suave); }
+.portada h1 { font-size: clamp(2.5rem, 10vw, 5.6rem); }
+.portada__entrada { max-width: 38rem; color: var(--suave); font-size: 1.06rem; }
+
+/* fichas de datos */
+.fichas { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.ficha {
+  display: flex; flex-direction: column; gap: 6px; min-height: 124px; padding: 16px 14px 14px; border-radius: var(--radio);
+  background: rgba(255, 255, 255, .7); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .85), 0 18px 40px -26px rgba(64, 44, 26, .55);
+}
+.ficha .etiqueta { color: var(--suave); font-size: .62rem; }
+.ficha__dato { margin-top: auto; font-weight: 740; font-stretch: 86%; font-size: 1.32rem; letter-spacing: -.02em; line-height: 1.05; }
+.ficha__dato .cifra { font-size: 1.9rem; }
+.ficha__nota { font-size: .8rem; line-height: 1.3; color: var(--suave); }
+.ficha--verde { background: rgba(71, 120, 44, .92); color: #fff; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .25), 0 18px 40px -22px rgba(50, 82, 32, .8); }
+.ficha--verde .etiqueta, .ficha--verde .ficha__nota { color: rgba(255, 255, 255, .8); }
+@media (min-width: 900px) { .fichas { grid-template-columns: repeat(5, 1fr); } .ficha:first-child { grid-column: auto; } }
+.fuente { margin-top: 12px; font-size: .78rem; color: var(--suave); }
+
+/* secciones y cabeceras */
+.seccion { padding: clamp(64px, 11vw, 112px) 0 0; }
+.cabeza { max-width: 46rem; margin-bottom: clamp(28px, 5vw, 44px); }
+.cabeza__num { display: flex; align-items: center; gap: 12px; color: var(--suave); margin-bottom: 16px; }
+.cabeza__num span { font-weight: 300; font-stretch: 75%; font-size: 1.5rem; letter-spacing: 0; color: var(--re); }
+.cabeza__titular { font-size: clamp(2.1rem, 8.6vw, 4.2rem); }
+.cabeza__entrada { margin-top: 16px; max-width: 36rem; color: var(--suave); font-size: 1.04rem; }
+.vista { display: grid; gap: 14px; margin-top: clamp(36px, 6vw, 64px); }
+.vista:first-of-type { margin-top: 0; }
+.vista h3 { font-weight: 720; font-stretch: 88%; font-size: clamp(1.3rem, 4vw, 1.75rem); letter-spacing: -.02em; line-height: 1.08; }
+.vista__texto { max-width: 40rem; color: var(--suave); }
+.pie { font-size: .8rem; line-height: 1.4; color: var(--suave); max-width: 44rem; }
+
+/* imágenes: esquinas y sombra del mapa de la web */
+.ba, .par, .fijo {
   --pos: 50%;
-  position: relative; margin: 0; overflow: hidden; border-radius: 14px; border: 1px solid var(--borde);
-  aspect-ratio: 16 / 9; max-width: 100%; background: var(--panel);
+  position: relative; overflow: hidden; border-radius: 26px; background: var(--salvia);
+  aspect-ratio: 16 / 9; width: 100%; box-shadow: 0 30px 60px -44px rgba(34, 47, 30, .6);
   user-select: none; -webkit-user-select: none;
 }
-.ba img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+.ba img, .par img, .fijo img, .fijo video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
 .ba .despues { position: absolute; inset: 0; clip-path: inset(0 0 0 var(--pos)); }
-.ba .per { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0; transition: opacity .25s ease; }
-.ba .per polygon { fill: none; stroke: var(--acento); stroke-width: 9; stroke-dasharray: 34 18; stroke-linejoin: round; }
+.ba .per { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0; transition: opacity .3s var(--ease); z-index: 2; }
+.ba .per polygon { fill: rgba(176, 208, 122, .18); stroke: #fff; stroke-width: 8; stroke-dasharray: 30 16; stroke-linejoin: round; }
 .ba.con-perimetro .per { opacity: 1; }
-.ba .raya { position: absolute; top: 0; bottom: 0; left: var(--pos); width: 2px; margin-left: -1px; background: #fff; pointer-events: none; }
+.ba .raya { position: absolute; top: 0; bottom: 0; left: var(--pos); width: 2px; margin-left: -1px; background: #fff; z-index: 3; pointer-events: none; box-shadow: 0 0 8px rgba(34, 47, 30, .3); }
 .ba .tirador {
-  position: absolute; top: 50%; left: var(--pos); width: 40px; height: 40px; margin: -20px 0 0 -20px;
-  border-radius: 50%; background: #fff; border: 2px solid var(--acento); box-shadow: 0 1px 4px rgba(20, 20, 19, .18);
-  pointer-events: none; display: grid; place-items: center;
+  position: absolute; bottom: 8px; left: var(--pos); width: 44px; height: 44px; margin: 0 0 0 -22px; z-index: 4;
+  border-radius: 50%; background: var(--re); color: #fff; display: grid; place-items: center; pointer-events: none;
+  box-shadow: 0 0 0 3px #fff, 0 10px 24px -10px rgba(50, 82, 32, .8);
 }
-.ba .tirador svg { width: 20px; height: 20px; }
-.ba .tirador path { fill: none; stroke: #141413; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.ba .chip {
-  position: absolute; bottom: .65rem; padding: .2rem .6rem; border-radius: 999px;
-  font: 500 .8125rem/1.3 var(--f-ui); color: var(--chip-texto); background: var(--chip);
-  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); pointer-events: none;
+.ba .tirador svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.chip {
+  position: absolute; bottom: 12px; z-index: 3; pointer-events: none; padding: 6px 11px; border-radius: 999px;
+  background: rgba(248, 247, 242, .9); color: var(--tinta); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .8), 0 8px 20px -14px rgba(34, 47, 30, .6);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
 }
-.ba .chip.izq { left: .65rem; }
-.ba .chip.der { right: .65rem; }
-.ba input[type="range"] { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize; touch-action: pan-y; }
-.ba:has(input:focus-visible) { outline: 2px solid var(--acento); outline-offset: 3px; }
+.chip.izq { left: 12px; }
+.chip.der { right: 12px; }
+.chip.verde { background: var(--re); color: #fff; box-shadow: 0 8px 20px -12px rgba(50, 82, 32, .8); }
+.chip.arriba { top: 12px; bottom: auto; right: 12px; }
+.ba input[type="range"] { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize; touch-action: pan-y; z-index: 5; }
+.ba:has(input:focus-visible) { outline: 2.5px solid var(--re); outline-offset: 4px; }
 
-.mandos { display: flex; flex-wrap: wrap; align-items: center; gap: .7rem 1.25rem; }
-.segmento { display: inline-flex; gap: 2px; background: var(--panel); border-radius: 999px; padding: 3px; }
-.segmento button {
-  font: 500 .875rem/1 var(--f-ui); color: var(--texto-2); background: transparent; border: 1px solid transparent;
-  border-radius: 999px; padding: .6rem 1rem; min-height: 40px; cursor: pointer;
+/* rótulos: punto verde y pastilla blanca, como «Entrada de camiones» en el mapa de la web */
+.rotulos { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
+.rot { position: absolute; left: var(--x); top: var(--y); width: 0; height: 0; font-style: normal; }
+.rot::before { content: ""; position: absolute; left: -6px; top: -6px; width: 12px; height: 12px; border-radius: 50%; background: var(--re); box-shadow: 0 0 0 2.5px #fff, 0 4px 10px -4px rgba(34, 47, 30, .7); }
+.rot span {
+  position: absolute; top: 0; left: 14px; transform: translateY(-50%); white-space: nowrap;
+  display: grid; gap: 1px; padding: 6px 10px 6px; border-radius: 10px; background: rgba(255, 255, 255, .94);
+  box-shadow: 0 8px 20px -12px rgba(34, 47, 30, .55);
+  font-weight: 650; font-size: clamp(.64rem, 1.25vw, .8rem); line-height: 1.15; color: var(--tinta);
 }
-.segmento button:hover { color: var(--texto); }
-.segmento button[aria-pressed="true"] { background: var(--superficie); border-color: var(--borde); color: var(--texto); }
-.segmento button:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
-.conmutador { display: inline-flex; align-items: center; gap: .55rem; font: 400 .875rem/1.4 var(--f-ui); color: var(--texto-2); cursor: pointer; min-height: 40px; }
-.conmutador input { width: 1.1rem; height: 1.1rem; accent-color: var(--acento); margin: 0; }
-.conmutador input:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
-.pie-foto { margin: 0; font: 400 .8125rem/1.5 var(--f-ui); color: var(--texto-2); max-width: 700px; }
+.rot small { font-weight: 420; font-size: .86em; color: var(--suave); }
+.rot.izq span { left: auto; right: 14px; }
+@media (max-width: 600px) {
+  .rot small { display: none; }
+  .rot.izq span { left: 14px; right: auto; }
+  .chip { bottom: 10px; padding: 5px 9px; }
+}
 
-/* cierre */
-.bloque { display: grid; gap: .8rem; }
-.bloque p { margin: 0; }
-.bloque ol { margin: 0; padding-left: 1.3rem; display: grid; gap: .5rem; }
-.bloque li::marker { color: var(--texto-2); font-family: var(--f-ui); font-size: .9em; }
-.firma { margin: 0; font: 400 .8125rem/1.5 var(--f-ui); color: var(--texto-2); border-top: 1px solid var(--borde); padding-top: 1rem; }
+.mandos { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
+.segmento { display: inline-flex; gap: 4px; padding: 4px; border-radius: 999px; background: rgba(255, 255, 255, .7); box-shadow: inset 0 0 0 1px var(--linea); }
+.segmento button { height: 40px; padding: 0 16px; border-radius: 999px; font-weight: 620; font-size: .9rem; color: var(--suave); transition: background-color .3s, color .3s; }
+.segmento button:hover { color: var(--tinta); }
+.segmento button[aria-pressed="true"] { background: var(--re); color: #fff; box-shadow: 0 8px 18px -12px rgba(50, 82, 32, .8); }
+.conmutador { display: inline-flex; align-items: center; gap: 9px; min-height: 40px; font-size: .9rem; color: var(--suave); cursor: pointer; }
+.conmutador input { width: 18px; height: 18px; margin: 0; accent-color: var(--re); }
 
-@media (prefers-reduced-motion: reduce) { .ba .per { transition: none; } html { scroll-behavior: auto; } }
+/* pares con encuadre distinto: se alterna */
+.par img { transition: opacity .35s var(--ease); }
+.par img.b { opacity: 0; }
+.par.con img.b { opacity: 1; }
+.par.vertical { aspect-ratio: 9 / 16; max-width: 420px; }
+.dos { display: grid; gap: 10px; grid-template-columns: 1fr; }
+@media (min-width: 760px) { .dos { grid-template-columns: 1fr 1fr; } }
+.lado { display: grid; gap: 28px; align-items: start; }
+@media (min-width: 900px) { .lado { grid-template-columns: 420px 1fr; } }
+
+/* medidas del cierre */
+.medidas { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+@media (min-width: 900px) { .medidas { grid-template-columns: repeat(4, 1fr); } }
+
+/* cómo están hechas y pie */
+.notas { display: grid; gap: 14px; max-width: 44rem; color: var(--suave); }
+.notas p { font-size: .98rem; }
+.pie-pagina { margin-top: clamp(64px, 10vw, 112px); padding: 28px 0 48px; border-top: 1px solid var(--linea); display: flex; flex-wrap: wrap; gap: 14px 28px; align-items: center; justify-content: space-between; font-size: .8rem; color: var(--suave); }
+.pie-pagina img { height: 22px; width: auto; }
+
+@media (prefers-reduced-motion: reduce) { .ba .per, .par img { transition: none; } }
 </style>
 </head>
 <body>
-<main class="pagina">
-  <header class="col cabecera">
-    <p class="meta">Reverso · Finca Viña Grande, Ciempozuelos · Borrador para validar, 23-11-2026</p>
-    <h1>Así quedará la finca Viña Grande</h1>
-    <p class="entrada">Son fotos reales del terreno y la ortofoto oficial del IGN. En cada «después» solo cambia el suelo de la antigua gravera: el hueco se rellena hasta la cota de la vía del tren, se nivela y vuelve a ser tierra de cultivo, como las parcelas de la vega que la rodean. Desliza sobre cada imagen para comparar.</p>
-  </header>
+<header class="caja barra">
+  <span class="logo"><img src="marca/reverso-horizontal.svg" alt="Reverso" width="186" height="30"></span>
+</header>
 
-  <section class="col" aria-label="Datos del proyecto">
-    <dl class="cifras">
-      <div><dt>Superficie</dt><dd>32,5 ha<small>324.831 m² en nueve parcelas del polígono 9</small></dd></div>
-      <div><dt>Relleno</dt><dd>1.970.802 m³<small>de tierras y materiales inertes</small></dd></div>
-      <div><dt>Hueco actual</dt><dd>8–15 m<small>bajo la cota original en la zona central y norte</small></dd></div>
-      <div><dt>Uso final</dt><dd>Agrícola<small>sin arbolado nuevo, por estar en el BIC Salinas de Espartinas</small></dd></div>
+<main>
+  <section class="caja portada">
+    <p class="etiqueta">Finca Viña Grande · Ciempozuelos · Borrador 23-11-2026</p>
+    <h1 class="titular">Así quedará la finca restaurada</h1>
+    <p class="portada__entrada">La antigua gravera se rellena con tierras y materiales inertes hasta la cota que tenía el terreno antes de la extracción, según el estudio topográfico, y vuelve a ser tierra de cultivo, como las parcelas de la vega que la rodean. Todo parte del sitio real: la ortofoto oficial, el modelo del terreno del IGN y fotos tomadas en la finca. Desliza sobre cada imagen para comparar.</p>
+  </section>
+
+  <section class="caja" aria-label="Datos del proyecto">
+    <dl class="fichas">
+      <div class="ficha"><dt class="etiqueta">Superficie</dt><dd class="ficha__dato"><span class="cifra">32,5</span> ha</dd><dd class="ficha__nota">324.831 m² en nueve parcelas</dd></div>
+      <div class="ficha"><dt class="etiqueta">Relleno</dt><dd class="ficha__dato"><span class="cifra">1,97</span> mill. m³</dd><dd class="ficha__nota">tierras y materiales inertes</dd></div>
+      <div class="ficha"><dt class="etiqueta">Altura de relleno</dt><dd class="ficha__dato">hasta <span class="cifra">14</span> m</dd><dd class="ficha__nota">en la zona central y norte</dd></div>
+      <div class="ficha"><dt class="etiqueta">Cota final</dt><dd class="ficha__dato"><span class="cifra">505–513</span> m</dd><dd class="ficha__nota">la del terreno original</dd></div>
+      <div class="ficha ficha--verde"><dt class="etiqueta">Uso final</dt><dd class="ficha__dato">Agrícola</dd><dd class="ficha__nota">sin arbolado nuevo (BIC Salinas de Espartinas)</dd></div>
     </dl>
     <p class="fuente">Fuente: Proyecto de control arqueológico INF/0218/2023 (GEA Arqueólogos, julio de 2026) y estudio topográfico de la explotación (septiembre de 2023).</p>
   </section>
 
-  <section class="vista" aria-labelledby="t-aerea">
-    <div class="col vista-cab">
-      <h2 id="t-aerea">La finca desde el aire</h2>
-      <p>Arriba, la vía del tren; abajo, la M-307. Toda la franja entre las dos se rellena y queda dividida en parcelas de cultivo con sus caminos. La hilera de árboles de la cacera de riego se conserva.</p>
+  <!-- 01 · Desde el aire -->
+  <section class="seccion caja" aria-labelledby="t-aire">
+    <div class="cabeza">
+      <p class="cabeza__num etiqueta"><span>01</span> Desde el aire</p>
+      <h2 class="titular cabeza__titular" id="t-aire">La gravera vuelve a ser vega</h2>
     </div>
-    <figure class="ba ancho" id="ba-aerea" style="width:100%">
-      <img src="img/aerea-antes.jpg" alt="Ortofoto de 2023: antigua gravera con planta de machaqueo, acopios, una charca y matorral entre la vía del tren y la M-307" width="2400" height="1350">
-      <div class="despues"><img src="img/aerea-despues.jpg" alt="La misma vista con la franja rellena y dividida en seis parcelas de cultivo, verdes y labradas, separadas por caminos" width="2400" height="1350"></div>
-      <svg class="per" viewBox="0 0 6000 3375" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><polygon points="5518,1894 5192,1509 5187,1489 5217,1397 5242,1340 5287,1270 5261,1263 5219,1245 5066,1228 4925,1218 4838,1214 4832,1202 4836,1199 4835,1196 4814,1198 3501,1244 3424,1252 2701,1276 1683,1318 1675,1493 1662,1498 1471,1478 1423,1472 1261,1443 1249,1450 1199,1493 1162,1509 1089,1586 1103,1620 1110,1649 1136,1656 1171,1672 1205,1704 1226,1739 1237,1769 1257,1807 1280,1841 1303,1862 1346,1891 1418,1916 1639,1980 1949,2049 2297,2132 2779,2240 3167,2322 3347,2348 3437,2351 3609,2340 4662,2219 4897,2190 4919,2141"/></svg>
-      <div class="raya" aria-hidden="true"></div>
-      <div class="tirador" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l-5 6 5 6M15 6l5 6-5 6"/></svg></div>
-      <span class="chip izq" aria-hidden="true">Hoy</span>
-      <span class="chip der" aria-hidden="true">Restaurada</span>
-      <input type="range" min="0" max="100" value="50" step="0.5" aria-label="Comparar la vista aérea de hoy con la finca restaurada">
-    </figure>
-    <div class="col mandos">
-      <div class="segmento" role="group" aria-label="Vista aérea">
-        <button type="button" data-a="0">Restaurada</button>
-        <button type="button" data-a="50" aria-pressed="true">Comparar</button>
-        <button type="button" data-a="100">Hoy</button>
+
+    <div class="vista">
+      <p class="vista__texto">Toda la franja entre la vía del tren y la M-307 se rellena y queda dividida en parcelas de cultivo con sus caminos. La hilera de árboles de la cacera de riego se conserva.</p>
+      <figure class="ba" id="ba-aerea">
+        <img src="img/aerea-antes.jpg" alt="Ortofoto de 2023: antigua gravera con planta de machaqueo, acopios, una charca y matorral entre la vía del tren y la M-307" width="2400" height="1350">
+        <div class="despues"><img src="img/aerea-despues.jpg" alt="La misma vista con la franja rellena y dividida en seis parcelas de cultivo separadas por caminos" width="2400" height="1350"></div>
+        <svg class="per" viewBox="0 0 6000 3375" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><polygon points="5518,1894 5192,1509 5187,1489 5217,1397 5242,1340 5287,1270 5261,1263 5219,1245 5066,1228 4925,1218 4838,1214 4832,1202 4836,1199 4835,1196 4814,1198 3501,1244 3424,1252 2701,1276 1683,1318 1675,1493 1662,1498 1471,1478 1423,1472 1261,1443 1249,1450 1199,1493 1162,1509 1089,1586 1103,1620 1110,1649 1136,1656 1171,1672 1205,1704 1226,1739 1237,1769 1257,1807 1280,1841 1303,1862 1346,1891 1418,1916 1639,1980 1949,2049 2297,2132 2779,2240 3167,2322 3347,2348 3437,2351 3609,2340 4662,2219 4897,2190 4919,2141"/></svg>
+        <div class="rotulos" aria-hidden="true">
+          <i class="rot" style="--x:58.3%;--y:36.2%"><span>Vía del tren</span></i>
+          <i class="rot" style="--x:41.7%;--y:65.6%"><span>M-307</span></i>
+          <i class="rot" style="--x:66.7%;--y:63.3%"><span>Cacera de riego<small>se conserva</small></span></i>
+          <i class="rot" style="--x:18.6%;--y:48.4%"><span>Entrada de camiones<small>M-307, junto a la vía</small></span></i>
+        </div>
+        <div class="raya" aria-hidden="true"></div>
+        <div class="tirador" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l-5 6 5 6M15 6l5 6-5 6"/></svg></div>
+        <span class="chip izq etiqueta" aria-hidden="true">Hoy</span>
+        <span class="chip der verde etiqueta" aria-hidden="true">Restaurada</span>
+        <input type="range" min="0" max="100" value="50" step="0.5" aria-label="Comparar la vista aérea de hoy con la finca restaurada">
+      </figure>
+      <div class="mandos">
+        <div class="segmento" role="group" aria-label="Vista aérea">
+          <button type="button" data-a="100">Hoy</button>
+          <button type="button" data-a="50" aria-pressed="true">Comparar</button>
+          <button type="button" data-a="0">Restaurada</button>
+        </div>
+        <label class="conmutador"><input type="checkbox" id="ver-perimetro"><span>Ver el perímetro del relleno</span></label>
       </div>
-      <label class="conmutador"><input type="checkbox" id="ver-perimetro"><span>Ver el perímetro del relleno</span></label>
+      <p class="pie">Ortofoto PNOA 2023 (IGN), girada para que la finca quede en horizontal: el norte queda a la derecha. El ancho de la imagen son 1,8 km. Fuera del perímetro del relleno la imagen es la original.</p>
     </div>
-    <p class="col pie-foto">Ortofoto PNOA 2023 (IGN), girada para que la finca quede en horizontal: el norte queda a la derecha. Escala aproximada: el ancho de la imagen son 1,8 km. Fuera del perímetro del relleno la imagen es la original.</p>
+
+    <div class="vista">
+      <h3>Hasta dónde se rellena</h3>
+      <p class="vista__texto">El hueco se rellena hasta la cota que tenía el terreno antes de la extracción, según el modelo de reposición del estudio topográfico. Esa cota cambia en cada punto: de 505 metros junto a la M-307 a 513 metros en el norte, junto a la vía, con una pendiente suave hacia la vega. La vía queda entre 1 y 3 metros por encima, como ahora.</p>
+      <figure class="fijo">
+        <img src="img/cotas.jpg" alt="Ortofoto de la finca con la altura de relleno en azul, más oscuro donde hay más relleno, hasta 14 metros, y las curvas de la cota final cada metro, de 505 a 513" width="2400" height="1350">
+      </figure>
+      <p class="pie">En azul, la altura de relleno en cada punto (de 0 a 14 m); en blanco, las curvas de la cota final cada metro. Las cotas salen del plano «Estado inicial teórico» del estudio topográfico y coinciden con su tabla de perfiles con un margen medio de 0,3 m.</p>
+    </div>
   </section>
 
-  <section class="vista" aria-labelledby="t-via">
-    <div class="col vista-cab">
-      <h2 id="t-via">Desde la finca, mirando a la vía</h2>
-      <p>Al fondo, la vía y los cerros de yeso. El corte de la gravera, la explanada y las casetas desaparecen: el terreno sube hasta la cota de la vía y queda una sola parcela llana, sembrada.</p>
+  <!-- 02 · El hueco -->
+  <section class="seccion caja" aria-labelledby="t-hueco">
+    <div class="cabeza">
+      <p class="cabeza__num etiqueta"><span>02</span> El hueco</p>
+      <h2 class="titular cabeza__titular" id="t-hueco">Lo que no se ve desde arriba</h2>
+      <p class="cabeza__entrada">Maqueta del terreno real cortada por la parte más honda de la finca. Hoy, la cara del corte enseña el hueco de la gravera en las capas de limos, arenas y gravas. Restaurada, el hueco queda ocupado por el relleno, con la tierra vegetal y los cultivos encima.</p>
     </div>
-    <figure class="ba ancho" id="ba-via" style="width:100%">
-      <img src="img/via-antes.jpg" alt="Foto de la visita: matorral en primer plano, explanada de grava, casetas y el talud de la antigua extracción delante de la vía y los cerros" width="2400" height="1349">
-      <div class="despues"><img src="img/via-despues.jpg" alt="La misma foto con el terreno nivelado hasta la vía y convertido en un campo de cereal joven" width="2400" height="1349"></div>
-      <div class="raya" aria-hidden="true"></div>
-      <div class="tirador" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l-5 6 5 6M15 6l5 6-5 6"/></svg></div>
-      <span class="chip izq" aria-hidden="true">Hoy</span>
-      <span class="chip der" aria-hidden="true">Restaurada</span>
-      <input type="range" min="0" max="100" value="50" step="0.5" aria-label="Comparar la vista hacia la vía hoy y restaurada">
-    </figure>
-    <div class="col mandos">
-      <div class="segmento" role="group" aria-label="Vista hacia la vía">
-        <button type="button" data-a="0">Restaurada</button>
-        <button type="button" data-a="50" aria-pressed="true">Comparar</button>
-        <button type="button" data-a="100">Hoy</button>
+
+    <div class="vista">
+      <figure class="ba" id="ba-corte">
+        <img src="img/corte-antes.jpg" alt="Maqueta 3D del terreno actual cortada: en la cara del corte se ve el hueco de la gravera, de hasta 13 metros de profundidad" width="2400" height="1350">
+        <div class="rotulos" aria-hidden="true">
+          <i class="rot izq" style="--x:33%;--y:63.3%"><span>Fondo del hueco<small>13 m bajo la cota original</small></span></i>
+        </div>
+        <div class="despues">
+          <img src="img/corte-despues.jpg" alt="La misma maqueta restaurada: el hueco relleno, en gris en la cara del corte, y la superficie convertida en parcelas de cultivo" width="2400" height="1350">
+          <div class="rotulos" aria-hidden="true">
+            <i class="rot izq" style="--x:32.6%;--y:58.4%"><span>Relleno<small>tierras y materiales inertes</small></span></i>
+            <i class="rot" style="--x:61.9%;--y:38.6%"><span>Tierra vegetal y cultivo<small>a la cota original</small></span></i>
+          </div>
+        </div>
+        <div class="rotulos" aria-hidden="true">
+          <i class="rot" style="--x:43.3%;--y:34%"><span>Vía del tren</span></i>
+          <i class="rot" style="--x:62.9%;--y:54.2%"><span>M-307</span></i>
+        </div>
+        <span class="chip arriba etiqueta" aria-hidden="true">Relieve ×3</span>
+        <div class="raya" aria-hidden="true"></div>
+        <div class="tirador" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l-5 6 5 6M15 6l5 6-5 6"/></svg></div>
+        <span class="chip izq etiqueta" aria-hidden="true">Hoy</span>
+        <span class="chip der verde etiqueta" aria-hidden="true">Restaurada</span>
+        <input type="range" min="0" max="100" value="50" step="0.5" aria-label="Comparar la maqueta cortada hoy y restaurada">
+      </figure>
+      <div class="mandos">
+        <div class="segmento" role="group" aria-label="Maqueta cortada">
+          <button type="button" data-a="100">Hoy</button>
+          <button type="button" data-a="50" aria-pressed="true">Comparar</button>
+          <button type="button" data-a="0">Restaurada</button>
+        </div>
+      </div>
+      <p class="pie">Modelo digital del terreno del IGN con la ortofoto PNOA 2023 encima. Tramo de 600 × 630 m. El relieve está exagerado tres veces para que se lea la profundidad; las capas del subsuelo son orientativas.</p>
+    </div>
+
+    <div class="vista">
+      <h3>Cómo se rellena</h3>
+      <p class="vista__texto">El relleno sube por tongadas, extendidas y compactadas, hasta la cota del terreno original. Al final se extiende la tierra vegetal y la finca vuelve al cultivo.</p>
+      <figure class="fijo">
+        <video src="img/fases.mp4" poster="img/fases-poster.jpg" autoplay muted loop playsinline aria-label="Animación: el hueco de la maqueta se rellena en cuatro tongadas y al final aparecen los cultivos"></video>
+        <span class="chip arriba etiqueta" aria-hidden="true">Borrador</span>
+      </figure>
+      <p class="pie">Borrador en baja para validar la cámara y los tiempos; la versión final irá a más calidad.</p>
+    </div>
+  </section>
+
+  <!-- 03 · En 3D -->
+  <section class="seccion caja" aria-labelledby="t-3d">
+    <div class="cabeza">
+      <p class="cabeza__num etiqueta"><span>03</span> En 3D</p>
+      <h2 class="titular cabeza__titular" id="t-3d">Como desde un dron</h2>
+      <p class="cabeza__entrada">El terreno real en 3D, a escala, con la ortofoto encima. Restaurada, la franja entre la vía y la M-307 se lee como una parcela más de la vega.</p>
+    </div>
+
+    <div class="vista">
+      <h3>Desde los cerros, hacia la vega del Jarama</h3>
+      <figure class="ba" id="ba-dron">
+        <img src="img/dron-antes.jpg" alt="Vista 3D de dron del terreno actual: la gravera entre la vía y la carretera, con la vega del Jarama al fondo" width="2400" height="1350">
+        <div class="despues"><img src="img/dron-despues.jpg" alt="La misma vista con la franja convertida en parcelas de cultivo" width="2400" height="1350"></div>
+        <div class="rotulos" aria-hidden="true">
+          <i class="rot" style="--x:71.9%;--y:63.9%"><span>Vía del tren</span></i>
+          <i class="rot" style="--x:31.8%;--y:38.7%"><span>M-307</span></i>
+          <i class="rot" style="--x:55.7%;--y:16.7%"><span>Vega del Jarama</span></i>
+        </div>
+        <div class="raya" aria-hidden="true"></div>
+        <div class="tirador" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l-5 6 5 6M15 6l5 6-5 6"/></svg></div>
+        <span class="chip izq etiqueta" aria-hidden="true">Hoy</span>
+        <span class="chip der verde etiqueta" aria-hidden="true">Restaurada</span>
+        <input type="range" min="0" max="100" value="50" step="0.5" aria-label="Comparar la vista de dron hoy y restaurada">
+      </figure>
+      <div class="mandos">
+        <div class="segmento" role="group" aria-label="Vista de dron">
+          <button type="button" data-a="100">Hoy</button>
+          <button type="button" data-a="50" aria-pressed="true">Comparar</button>
+          <button type="button" data-a="0">Restaurada</button>
+        </div>
       </div>
     </div>
-    <p class="col pie-foto">Foto de la visita del 14-10-2026. El cielo, los cerros y la vía son los píxeles originales de la cámara.</p>
+
+    <div class="vista">
+      <h3>Desde la entrada de la M-307</h3>
+      <figure class="ba" id="ba-entrada3d">
+        <img src="img/entrada3d-antes.jpg" alt="Vista 3D desde la entrada sur: la gravera entre la vía y la M-307, con los cerros al fondo" width="2400" height="1350">
+        <div class="despues"><img src="img/entrada3d-despues.jpg" alt="La misma vista con la finca convertida en parcelas de cultivo" width="2400" height="1350"></div>
+        <div class="rotulos" aria-hidden="true">
+          <i class="rot izq" style="--x:27%;--y:58.6%"><span>Vía del tren</span></i>
+          <i class="rot" style="--x:70.7%;--y:60.9%"><span>M-307</span></i>
+        </div>
+        <div class="raya" aria-hidden="true"></div>
+        <div class="tirador" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l-5 6 5 6M15 6l5 6-5 6"/></svg></div>
+        <span class="chip izq etiqueta" aria-hidden="true">Hoy</span>
+        <span class="chip der verde etiqueta" aria-hidden="true">Restaurada</span>
+        <input type="range" min="0" max="100" value="50" step="0.5" aria-label="Comparar la vista desde la entrada hoy y restaurada">
+      </figure>
+      <div class="mandos">
+        <div class="segmento" role="group" aria-label="Vista desde la entrada">
+          <button type="button" data-a="100">Hoy</button>
+          <button type="button" data-a="50" aria-pressed="true">Comparar</button>
+          <button type="button" data-a="0">Restaurada</button>
+        </div>
+      </div>
+      <p class="pie">Modelo digital del terreno del IGN y ortofotos PNOA 2023, sin exagerar el relieve. La finca restaurada sigue las cotas del estudio topográfico.</p>
+    </div>
   </section>
 
-  <section class="vista" aria-labelledby="t-vega">
-    <div class="col vista-cab">
-      <h2 id="t-vega">Hacia la vega del Jarama</h2>
-      <p>Mirando al este, sobre el fondo del hueco. Los caminos de la explotación y el matorral dejan paso a un campo de cereal a la altura de las parcelas de la vega.</p>
+  <!-- 04 · A pie de finca -->
+  <section class="seccion caja" aria-labelledby="t-pie">
+    <div class="cabeza">
+      <p class="cabeza__num etiqueta"><span>04</span> A pie de finca</p>
+      <h2 class="titular cabeza__titular" id="t-pie">Las fotos de la visita</h2>
+      <p class="cabeza__entrada">Fotos tomadas en la finca el 14 de octubre. En cada «después» solo cambia el suelo de la gravera: el cielo, los cerros, la vía y la arboleda son los píxeles originales de la cámara.</p>
     </div>
-    <figure class="ba ancho" id="ba-vega" style="width:100%">
-      <img src="img/vega-antes.jpg" alt="Foto de la visita: fondo de la gravera con matorral disperso, caminos de tierra y la arboleda de la vega al fondo" width="2400" height="1349">
-      <div class="despues"><img src="img/vega-despues.jpg" alt="La misma foto con el terreno nivelado y sembrado de cereal hasta la arboleda" width="2400" height="1349"></div>
-      <div class="raya" aria-hidden="true"></div>
-      <div class="tirador" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l-5 6 5 6M15 6l5 6-5 6"/></svg></div>
-      <span class="chip izq" aria-hidden="true">Hoy</span>
-      <span class="chip der" aria-hidden="true">Restaurada</span>
-      <input type="range" min="0" max="100" value="50" step="0.5" aria-label="Comparar la vista hacia la vega hoy y restaurada">
-    </figure>
-    <div class="col mandos">
-      <div class="segmento" role="group" aria-label="Vista hacia la vega">
-        <button type="button" data-a="0">Restaurada</button>
-        <button type="button" data-a="50" aria-pressed="true">Comparar</button>
-        <button type="button" data-a="100">Hoy</button>
+
+    <div class="vista">
+      <h3>Mirando a la vía y a los cerros</h3>
+      <p class="vista__texto">El corte de la gravera, la explanada y las casetas desaparecen: el terreno sube hasta la cota original, al pie del terraplén de la vía, y queda una sola parcela sembrada.</p>
+      <figure class="ba" id="ba-via">
+        <img src="img/via-antes.jpg" alt="Foto de la visita: matorral en primer plano, explanada de grava, casetas y el talud de la antigua extracción delante de la vía y los cerros" width="2400" height="1349">
+        <div class="despues"><img src="img/via-despues.jpg" alt="La misma foto con el terreno a la cota original hasta el pie de la vía y sembrado de cereal" width="2400" height="1349"></div>
+        <div class="raya" aria-hidden="true"></div>
+        <div class="tirador" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l-5 6 5 6M15 6l5 6-5 6"/></svg></div>
+        <span class="chip izq etiqueta" aria-hidden="true">Hoy</span>
+        <span class="chip der verde etiqueta" aria-hidden="true">Restaurada</span>
+        <input type="range" min="0" max="100" value="50" step="0.5" aria-label="Comparar la vista hacia la vía hoy y restaurada">
+      </figure>
+      <div class="mandos">
+        <div class="segmento" role="group" aria-label="Vista hacia la vía">
+          <button type="button" data-a="100">Hoy</button>
+          <button type="button" data-a="50" aria-pressed="true">Comparar</button>
+          <button type="button" data-a="0">Restaurada</button>
+        </div>
       </div>
     </div>
-    <p class="col pie-foto">Foto de la visita del 14-10-2026. El cielo, el horizonte y la arboleda son los píxeles originales de la cámara.</p>
-  </section>
 
-  <section class="vista" aria-labelledby="t-corte">
-    <div class="col vista-cab">
-      <h2 id="t-corte">Lo que no se ve desde arriba: el hueco</h2>
-      <p>Maqueta del terreno real cortada por la parte más honda de la finca, con la vía al fondo a la izquierda y la M-307 a la derecha. Hoy el corte muestra la gravera excavada en las capas de limos, arenas y gravas. Restaurada, el hueco queda ocupado por el relleno (en gris), con la tierra vegetal y los cultivos encima.</p>
-    </div>
-    <figure class="ba ancho" id="ba-corte" style="width:100%">
-      <img src="img/corte-antes.jpg" alt="Maqueta 3D del terreno actual cortada: en la cara del corte se ve el hueco de la gravera, de hasta 13 metros de profundidad" width="2400" height="1350">
-      <div class="despues"><img src="img/corte-despues.jpg" alt="La misma maqueta restaurada: el hueco relleno, en gris en la cara del corte, y la superficie convertida en parcelas de cultivo" width="2400" height="1350"></div>
-      <div class="raya" aria-hidden="true"></div>
-      <div class="tirador" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l-5 6 5 6M15 6l5 6-5 6"/></svg></div>
-      <span class="chip izq" aria-hidden="true">Hoy</span>
-      <span class="chip der" aria-hidden="true">Restaurada</span>
-      <input type="range" min="0" max="100" value="50" step="0.5" aria-label="Comparar la maqueta cortada hoy y restaurada">
-    </figure>
-    <div class="col mandos">
-      <div class="segmento" role="group" aria-label="Maqueta cortada">
-        <button type="button" data-a="0">Restaurada</button>
-        <button type="button" data-a="50" aria-pressed="true">Comparar</button>
-        <button type="button" data-a="100">Hoy</button>
+    <div class="vista">
+      <h3>Desde la explanada de la entrada</h3>
+      <p class="vista__texto">La explanada de grava, los acopios y el matorral pasan a ser campo hasta la hilera de olivos de la vía.</p>
+      <figure class="ba" id="ba-explanada">
+        <img src="img/explanada-antes.jpg" alt="Foto de la visita: explanada de grava con una furgoneta, montones de escombro y matorral, con los cerros al fondo" width="2400" height="1349">
+        <div class="despues"><img src="img/explanada-despues.jpg" alt="La misma foto con un campo de cereal joven hasta el pie de los cerros" width="2400" height="1349"></div>
+        <div class="raya" aria-hidden="true"></div>
+        <div class="tirador" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l-5 6 5 6M15 6l5 6-5 6"/></svg></div>
+        <span class="chip izq etiqueta" aria-hidden="true">Hoy</span>
+        <span class="chip der verde etiqueta" aria-hidden="true">Restaurada</span>
+        <input type="range" min="0" max="100" value="50" step="0.5" aria-label="Comparar la vista desde la explanada hoy y restaurada">
+      </figure>
+      <div class="mandos">
+        <div class="segmento" role="group" aria-label="Vista desde la explanada">
+          <button type="button" data-a="100">Hoy</button>
+          <button type="button" data-a="50" aria-pressed="true">Comparar</button>
+          <button type="button" data-a="0">Restaurada</button>
+        </div>
       </div>
     </div>
-    <p class="col pie-foto">Modelo digital del terreno del IGN (MDT05) con la ortofoto PNOA 2023 encima. Tramo de 600 × 630 m. El relieve está exagerado tres veces para que se lea la profundidad; las capas del subsuelo son orientativas.</p>
-  </section>
 
-  <section class="vista" aria-labelledby="t-dron">
-    <div class="col vista-cab">
-      <h2 id="t-dron">La finca en 3D, desde los cerros</h2>
-      <p>El mismo terreno visto como desde un dron, a escala real, mirando hacia la vega del Jarama. Restaurada, la franja entre la vía y la M-307 se lee como una parcela más de la vega.</p>
-    </div>
-    <figure class="ba ancho" id="ba-dron" style="width:100%">
-      <img src="img/dron-antes.jpg" alt="Vista 3D de dron del terreno actual: la gravera entre la vía y la carretera, con la vega del Jarama al fondo" width="2400" height="1350">
-      <div class="despues"><img src="img/dron-despues.jpg" alt="La misma vista con la franja convertida en parcelas de cultivo al nivel de la vía" width="2400" height="1350"></div>
-      <div class="raya" aria-hidden="true"></div>
-      <div class="tirador" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l-5 6 5 6M15 6l5 6-5 6"/></svg></div>
-      <span class="chip izq" aria-hidden="true">Hoy</span>
-      <span class="chip der" aria-hidden="true">Restaurada</span>
-      <input type="range" min="0" max="100" value="50" step="0.5" aria-label="Comparar la vista de dron hoy y restaurada">
-    </figure>
-    <div class="col mandos">
-      <div class="segmento" role="group" aria-label="Vista de dron">
-        <button type="button" data-a="0">Restaurada</button>
-        <button type="button" data-a="50" aria-pressed="true">Comparar</button>
-        <button type="button" data-a="100">Hoy</button>
+    <div class="vista">
+      <h3>Hacia la vega del Jarama</h3>
+      <p class="vista__texto">Los caminos de la explotación y el matorral dejan paso a un campo de cereal a la altura de las parcelas de la vega.</p>
+      <figure class="ba" id="ba-vega">
+        <img src="img/vega-antes.jpg" alt="Foto de la visita: fondo de la gravera con matorral disperso, caminos de tierra y la arboleda de la vega al fondo" width="2400" height="1349">
+        <div class="despues"><img src="img/vega-despues.jpg" alt="La misma foto con el terreno sembrado de cereal hasta la arboleda" width="2400" height="1349"></div>
+        <div class="raya" aria-hidden="true"></div>
+        <div class="tirador" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l-5 6 5 6M15 6l5 6-5 6"/></svg></div>
+        <span class="chip izq etiqueta" aria-hidden="true">Hoy</span>
+        <span class="chip der verde etiqueta" aria-hidden="true">Restaurada</span>
+        <input type="range" min="0" max="100" value="50" step="0.5" aria-label="Comparar la vista hacia la vega hoy y restaurada">
+      </figure>
+      <div class="mandos">
+        <div class="segmento" role="group" aria-label="Vista hacia la vega">
+          <button type="button" data-a="100">Hoy</button>
+          <button type="button" data-a="50" aria-pressed="true">Comparar</button>
+          <button type="button" data-a="0">Restaurada</button>
+        </div>
       </div>
     </div>
-    <p class="col pie-foto">Modelo digital del terreno del IGN y ortofotos PNOA 2023, sin exagerar el relieve.</p>
   </section>
 
-  <section class="col bloque" aria-labelledby="t-como">
-    <h2 id="t-como">Cómo están hechas</h2>
-    <p>Cada pareja parte de una imagen real: la ortofoto PNOA de 2023 o las fotos que tomamos en la visita. El «después» es esa misma imagen, en la que solo se ha cambiado el terreno de la gravera.</p>
-    <p>En la vista aérea, la zona cambiada coincide con el perímetro del relleno del estudio topográfico, y fuera de él no se ha tocado nada. En las fotos se conservan los píxeles originales del cielo, los cerros, la vía y la arboleda. El cereal que se ve es orientativo.</p>
-    <p>El 3D está hecho con el modelo digital del terreno del IGN. Para la finca restaurada, el hueco se rellena con una superficie suave que se apoya en el terreno de alrededor, con la vía y la M-307 como bordes. Medido sobre ese modelo, el relleno sale de 1.936.878 m³, un 1,7 % menos que los 1.970.802 m³ del estudio topográfico.</p>
+  <!-- 05 · Cierre perimetral (aparte) -->
+  <section class="seccion caja" aria-labelledby="t-cierre">
+    <div class="cabeza">
+      <p class="cabeza__num etiqueta"><span>05</span> Aparte · Cierre perimetral</p>
+      <h2 class="titular cabeza__titular" id="t-cierre">La finca, cerrada mientras se rellena</h2>
+      <p class="cabeza__entrada">Un murete de hormigón con malla metálica encima rodea la finca, con una puerta corredera en la entrada de camiones de la M-307.</p>
+    </div>
+    <dl class="medidas">
+      <div class="ficha"><dt class="etiqueta">Murete de hormigón</dt><dd class="ficha__dato"><span class="cifra">0,80</span> m</dd><dd class="ficha__nota">de alto, 20 cm de grueso</dd></div>
+      <div class="ficha"><dt class="etiqueta">Malla de simple torsión</dt><dd class="ficha__dato">hasta <span class="cifra">2,00</span> m</dd><dd class="ficha__nota">sobre el terreno, en verde</dd></div>
+      <div class="ficha"><dt class="etiqueta">Postes de acero</dt><dd class="ficha__dato">cada <span class="cifra">3</span> m</dd><dd class="ficha__nota">en el mismo verde</dd></div>
+      <div class="ficha ficha--verde"><dt class="etiqueta">Puerta corredera</dt><dd class="ficha__dato"><span class="cifra">8</span> m</dd><dd class="ficha__nota">en la entrada de camiones</dd></div>
+    </dl>
+
+    <div class="vista">
+      <h3>Así es un tramo</h3>
+      <p class="vista__texto">De cerca, al pie del terraplén de la vía: el murete de hormigón abajo y la malla verde encima, tensada entre postes.</p>
+      <figure class="fijo">
+        <img src="img/valla-tramo.jpg" alt="Primer plano del cierre: murete de hormigón gris, postes verdes y malla de simple torsión verde, con la finca detrás" width="2400" height="1350">
+        <div class="rotulos" aria-hidden="true">
+          <i class="rot" style="--x:28%;--y:28%"><span>Poste de acero<small>cada 3 m</small></span></i>
+          <i class="rot" style="--x:60%;--y:16%"><span>Malla de simple torsión<small>hasta 2,00 m sobre el terreno</small></span></i>
+          <i class="rot" style="--x:68%;--y:86%"><span>Murete de hormigón<small>0,80 m de alto</small></span></i>
+        </div>
+      </figure>
+    </div>
+
+    <div class="vista">
+      <h3>Desde la vía</h3>
+      <p class="vista__texto">El cierre al pie del terraplén de la vía, con la finca detrás.</p>
+      <figure class="par" id="par-via">
+        <img class="a" src="img/valla-via-hoy.jpg" alt="Foto desde el terraplén de la vía: la finca con matorral y una alambrada vieja" width="2400" height="1349">
+        <img class="b" src="img/valla-via-con.jpg" alt="La misma vista con el murete de hormigón y la malla verde al pie del terraplén" width="2400" height="1349">
+      </figure>
+      <div class="mandos">
+        <div class="segmento" role="group" aria-label="Cierre desde la vía">
+          <button type="button" data-v="a">Hoy</button>
+          <button type="button" data-v="b" aria-pressed="true">Con el cierre</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="vista lado">
+      <figure class="par vertical" id="par-entrada">
+        <img class="a" src="img/valla-entrada-hoy.jpg" alt="Fotograma de vídeo: la salida de la finca a la carretera, con una puerta vieja y un poste de madera" width="576" height="1024">
+        <img class="b" src="img/valla-entrada-con.jpg" alt="La misma salida arreglada: camino de zahorra hasta la puerta de malla, césped y setos a los lados del murete, y el cartel de Reverso junto a la puerta" width="1080" height="1935">
+      </figure>
+      <div style="display:grid;gap:14px">
+        <h3>En la entrada</h3>
+        <p class="vista__texto">La salida a la M-307 con la puerta corredera nueva, el cartel de Reverso, un camino de zahorra del ancho de la puerta para los camiones y franjas de césped y setos bajos a los lados. Sin árboles nuevos, por estar en el BIC.</p>
+        <div class="mandos">
+          <div class="segmento" role="group" aria-label="Cierre en la entrada">
+            <button type="button" data-v="a">Hoy</button>
+            <button type="button" data-v="b" aria-pressed="true">Con el cierre</button>
+          </div>
+        </div>
+        <p class="pie">Fotomontajes sobre fotos reales de la finca. El cartel lleva el logo oficial de Reverso.</p>
+      </div>
+    </div>
   </section>
 
-  <section class="col bloque" aria-labelledby="t-validar">
-    <h2 id="t-validar">Qué necesito que valides</h2>
-    <ol>
-      <li>Si el acabado agrícola es el que queréis enseñar, o si preferís otro cultivo o la tierra solo labrada.</li>
-      <li>Si la cota de la vía es la referencia correcta en toda la finca.</li>
-      <li>Si hacen falta más puntos de vista, por ejemplo desde la M-307 o desde la entrada.</li>
-      <li>Si el corte en 3D se entiende o preferís verlo sin exagerar el relieve.</li>
-    </ol>
-    <p>Con el visto bueno sigo con un vídeo corto del relleno por fases y monto el dosier final para la administración.</p>
+  <section class="seccion caja" aria-labelledby="t-como">
+    <div class="cabeza">
+      <p class="cabeza__num etiqueta"><span>·</span> Cómo están hechas</p>
+    </div>
+    <div class="notas">
+      <p>Las fotos y la ortofoto son reales. En cada «después» solo se ha cambiado el terreno de la gravera: en la vista aérea, dentro del perímetro del relleno del estudio topográfico; en las fotos, el suelo, conservando los píxeles originales del cielo, los cerros, la vía y la arboleda. El cereal que se ve es orientativo.</p>
+      <p>El 3D está hecho con el modelo digital del terreno del IGN. La finca restaurada sigue el modelo de reposición del estudio topográfico, curva a curva, y se ha comprobado contra su tabla de perfiles: la diferencia media es de 0,3 metros.</p>
+    </div>
   </section>
 
-  <p class="col firma">Recuperaciones y Vertidos Soto, S.L. · Grupo Soto. Imágenes de trabajo; no sustituyen a los planos del proyecto.</p>
+  <footer class="caja">
+    <div class="pie-pagina">
+      <img src="marca/reverso-horizontal.svg" alt="Reverso" width="137" height="22">
+      <span>Recuperaciones y Vertidos Soto, S.L. · Grupo Soto · Imágenes de trabajo; no sustituyen a los planos del proyecto.</span>
+    </div>
+  </footer>
 </main>
 
 <script>
@@ -289,6 +515,16 @@ document.querySelectorAll('.ba').forEach(function (fig) {
   }
   rango.addEventListener('input', function () { poner(rango.value); });
   botones.forEach(function (b) { b.addEventListener('click', function () { poner(Number(b.dataset.a)); }); });
+});
+document.querySelectorAll('.par').forEach(function (fig) {
+  var botones = fig.parentElement.querySelectorAll('.segmento button');
+  fig.classList.add('con');
+  botones.forEach(function (b) {
+    b.addEventListener('click', function () {
+      fig.classList.toggle('con', b.dataset.v === 'b');
+      botones.forEach(function (o) { o.setAttribute('aria-pressed', String(o === b)); });
+    });
+  });
 });
 var per = document.getElementById('ver-perimetro');
 per.addEventListener('change', function () { document.getElementById('ba-aerea').classList.toggle('con-perimetro', per.checked); });
