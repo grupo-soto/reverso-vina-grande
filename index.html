@@ -24,6 +24,7 @@
   --salvia: #E5ECDE;
   --arena: #EFE5D3;
   --hoja: #B0D07A;        /* símbolo del logo */
+  --tierra: #9B6B47;      /* la gravera, antes del giro */
   --radio: 22px;
   --ease: cubic-bezier(.22, 1, .36, 1);
   color-scheme: light;
@@ -59,7 +60,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 .logo img { height: 26px; width: auto; }
 
 /* portada */
-.portada { padding: clamp(40px, 9vw, 96px) 0 clamp(28px, 6vw, 56px); display: grid; gap: 18px; }
+.portada { padding-top: clamp(40px, 9vw, 96px); padding-bottom: clamp(28px, 6vw, 56px); display: grid; gap: 18px; }
 .portada .etiqueta { color: var(--suave); }
 .portada h1 { font-size: clamp(2.5rem, 10vw, 5.6rem); }
 .portada__entrada { max-width: 38rem; color: var(--suave); font-size: 1.06rem; }
@@ -80,7 +81,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 .fuente { margin-top: 12px; font-size: .78rem; color: var(--suave); }
 
 /* secciones y cabeceras */
-.seccion { padding: clamp(64px, 11vw, 112px) 0 0; }
+.seccion { padding-top: clamp(64px, 11vw, 112px); }
 .cabeza { max-width: 46rem; margin-bottom: clamp(28px, 5vw, 44px); }
 .cabeza__num { display: flex; align-items: center; gap: 12px; color: var(--suave); margin-bottom: 16px; }
 .cabeza__num span { font-weight: 300; font-stretch: 75%; font-size: 1.5rem; letter-spacing: 0; color: var(--re); }
@@ -169,10 +170,124 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 .pie-pagina { margin-top: clamp(64px, 10vw, 112px); padding: 28px 0 48px; border-top: 1px solid var(--linea); display: flex; flex-wrap: wrap; gap: 14px 28px; align-items: center; justify-content: space-between; font-size: .8rem; color: var(--suave); }
 .pie-pagina img { height: 22px; width: auto; }
 
-@media (prefers-reduced-motion: reduce) { .ba .per, .par img { transition: none; } }
+/* ===== movimiento (finca.js con GSAP): el giro de la web de Reverso, de tierra a verde ===== */
+.giro { display: inline-grid; transform: rotateX(180deg); transform-style: preserve-3d; }
+.giro__cara { grid-area: 1 / 1; backface-visibility: hidden; -webkit-backface-visibility: hidden; color: var(--tierra); }
+.giro__cara--verde { transform: rotateX(180deg); color: var(--re); }
+.pal { display: inline-block; overflow: clip; padding: 0 .02em .12em; margin: 0 -.02em -.12em; vertical-align: top; }
+.pal__in { display: inline-block; will-change: transform; }
+.progreso { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 95; pointer-events: none; transform-origin: 0 50%; transform: scaleX(0); background: linear-gradient(90deg, var(--tierra), var(--re) 60%); }
+
+/* ficha que gira: de gravera a agrícola */
+.ficha--giro { padding: 0; background: none; box-shadow: none; perspective: 900px; }
+.ficha--giro dd.caras { display: grid; flex: 1; transform-style: preserve-3d; }
+.cara {
+  grid-area: 1 / 1; display: flex; flex-direction: column; gap: 6px; padding: 16px 14px 14px; border-radius: var(--radio); color: #fff;
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
+}
+.cara .etiqueta, .cara .ficha__nota { color: rgba(255, 255, 255, .82); }
+.cara--hoy { background: var(--tierra); box-shadow: 0 18px 40px -22px rgba(90, 58, 30, .8); transform: rotateY(180deg); }
+.cara--fin { background: rgba(71, 120, 44, .92); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .25), 0 18px 40px -22px rgba(50, 82, 32, .8); }
+.oculto { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* plano de cotas: la capa azul se llena de abajo arriba con el scroll */
+.cotas .cotas__capa { clip-path: inset(var(--llena, 0%) 0 0 0); }
+.linea-corte { position: absolute; left: 0; right: 0; height: 2px; margin-top: -1px; background: #fff; z-index: 3; pointer-events: none; opacity: 0; box-shadow: 0 0 0 1px rgba(34, 47, 30, .12), 0 6px 16px -6px rgba(34, 47, 30, .5); }
+.cotas .linea-corte { top: var(--llena, 0%); }
+.cotas .linea-corte span { position: absolute; right: 12px; bottom: 8px; }
+
+/* relleno con el scroll: el vídeo avanza al bajar */
+.relleno { display: grid; gap: 18px; align-content: center; min-height: 100svh; padding: 64px 0 24px; }
+.relleno__video { background: var(--papel); }
+.relleno__video video { object-fit: contain; }
+.pasos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.paso { display: grid; gap: 4px; align-content: start; padding: 12px 0 0; border-top: 3px solid var(--linea); color: var(--suave); transition: color .4s, border-color .4s; }
+.paso b { font-weight: 700; font-stretch: 90%; font-size: .98rem; line-height: 1.15; color: inherit; }
+.paso small { font-size: .78rem; line-height: 1.3; }
+.paso .cifra { font-size: 1.5rem; line-height: 1; color: var(--tierra); transition: color .4s; }
+.paso.hecho { border-color: var(--re); }
+.paso.activo { color: var(--tinta); border-color: var(--re); }
+.paso.activo .cifra, .paso.hecho .cifra { color: var(--re); }
+.relleno__barra { height: 3px; border-radius: 3px; background: var(--linea); overflow: hidden; }
+.relleno__barra span { display: block; height: 100%; transform-origin: 0 50%; transform: scaleX(0); background: linear-gradient(90deg, var(--tierra), var(--re)); }
+@media (max-width: 700px) {
+  .pasos { grid-template-columns: 1fr 1fr; gap: 10px 8px; }
+  .paso small { display: none; }
+}
+@media (min-width: 900px) {
+  .relleno { grid-template-columns: 1fr 300px; column-gap: 40px; align-items: center; }
+  .relleno__cabeza, .relleno__barra { grid-column: 1 / -1; }
+  .pasos { grid-template-columns: 1fr; gap: 0; }
+  .paso { grid-template-columns: 40px 1fr; padding: 14px 0; border-top-width: 1px; }
+  .paso .cifra { grid-row: span 2; }
+}
+
+/* antes y después que no se pueden superponer (encuadres distintos): barrido de abajo arriba */
+.revela { --corte: 0%; }
+.revela__lienzo { position: absolute; inset: 0; transform-origin: 50% 50%; }
+.revela__b { position: absolute; inset: 0; clip-path: inset(var(--corte) 0 0 0); }
+.revela .linea-corte { top: var(--corte); }
+.revela .chip { transition: opacity .3s; }
+.revela.es-hoy .chip.der, .revela:not(.es-hoy) .chip.izq, .revela.con-foco .chip { opacity: 0; }
+
+/* puntos numerados de la entrada */
+.punto {
+  position: absolute; left: var(--x); top: var(--y); width: 34px; height: 34px; margin: -17px 0 0 -17px; z-index: 3;
+  display: grid; place-items: center; border-radius: 50%; background: #fff; color: var(--re-osc);
+  font-weight: 760; font-size: .9rem; box-shadow: 0 0 0 2px var(--re), 0 8px 18px -8px rgba(34, 47, 30, .8);
+  transition: background-color .3s, color .3s, opacity .3s;
+}
+.punto::after { content: ""; position: absolute; inset: -7px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, .9); opacity: 0; }
+.punto:hover, .punto.activo { background: var(--re); color: #fff; }
+.punto.activo::after { animation: latido 1.6s var(--ease) infinite; }
+.revela.con-foco .punto:not(.activo) { opacity: .35; }
+.revela.es-hoy .punto { opacity: 0; pointer-events: none; }
+@keyframes latido { from { transform: scale(.8); opacity: .9; } to { transform: scale(1.6); opacity: 0; } }
+.revela__ficha {
+  position: absolute; left: 10px; right: 10px; bottom: 10px; z-index: 4; display: grid; gap: 2px; padding: 12px 14px; border-radius: 16px;
+  background: rgba(255, 255, 255, .95); box-shadow: 0 14px 30px -16px rgba(34, 47, 30, .7); visibility: hidden;
+}
+.revela__ficha b { font-weight: 740; font-stretch: 90%; font-size: 1.05rem; line-height: 1.15; }
+.revela__ficha small { font-size: .84rem; color: var(--suave); }
+.revela__cerrar {
+  position: absolute; top: 10px; right: 10px; z-index: 5; height: 38px; padding: 0 14px 0 12px; border-radius: 999px; display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255, 255, 255, .94); font-weight: 620; font-size: .84rem; box-shadow: 0 8px 20px -12px rgba(34, 47, 30, .6); visibility: hidden;
+}
+.revela__cerrar svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+.entrada .par.vertical { width: min(100%, calc(72svh * 9 / 16)); max-width: 440px; margin-inline: auto; }
+.entrada__texto { display: grid; gap: 14px; }
+.cambios, .pasos { list-style: none; margin: 0; padding: 0; }
+.cambios { display: grid; gap: 6px; }
+.cambios button {
+  width: 100%; display: grid; grid-template-columns: 34px 1fr; gap: 12px; align-items: center; text-align: left; padding: 10px 12px; border-radius: 16px;
+  background: rgba(255, 255, 255, .7); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .85), 0 12px 26px -22px rgba(64, 44, 26, .6);
+  transition: background-color .3s, color .3s, transform .3s var(--ease);
+}
+.cambios button:hover { transform: translateX(4px); }
+.cambios .n { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 760; font-size: .9rem; color: var(--re-osc); box-shadow: inset 0 0 0 2px var(--re); }
+.cambios b { display: block; font-weight: 700; font-stretch: 92%; font-size: .98rem; line-height: 1.2; }
+.cambios small { display: block; font-size: .8rem; line-height: 1.3; color: var(--suave); }
+.cambios button[aria-pressed="true"] { background: var(--re); color: #fff; }
+.cambios button[aria-pressed="true"] .n { background: #fff; box-shadow: none; }
+.cambios button[aria-pressed="true"] small { color: rgba(255, 255, 255, .8); }
+.revela.es-hoy ~ * .cambios button, .entrada.es-hoy .cambios button { opacity: .55; }
+@media (max-width: 899px) {
+  .cambios { grid-template-columns: 1fr 1fr; }
+  .cambios button { grid-template-columns: 28px 1fr; gap: 8px; padding: 8px 10px; border-radius: 14px; }
+  .cambios .n { width: 28px; height: 28px; font-size: .8rem; }
+  .cambios small { display: none; }
+  .cambios b { font-size: .86rem; }
+  .cambios button:hover { transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ba .per, .par img, .punto, .cambios button, .paso { transition: none; }
+  .punto.activo::after { animation: none; }
+}
 </style>
 </head>
 <body>
+<div class="progreso" aria-hidden="true"></div>
 <header class="caja barra">
   <span class="logo"><img src="marca/reverso-horizontal.svg" alt="Reverso" width="186" height="30"></span>
 </header>
@@ -180,7 +295,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 <main>
   <section class="caja portada">
     <p class="etiqueta">Finca Viña Grande · Ciempozuelos · Borrador 23-11-2026</p>
-    <h1 class="titular">Así quedará la finca restaurada</h1>
+    <h1 class="titular" data-entra>Así quedará la finca <span class="giro" data-giro><span class="giro__cara">restaurada</span><span class="giro__cara giro__cara--verde" aria-hidden="true">restaurada</span></span></h1>
     <p class="portada__entrada">La antigua gravera se rellena con tierras y materiales inertes hasta la cota que tenía el terreno antes de la extracción, según el estudio topográfico, y vuelve a ser tierra de cultivo, como las parcelas de la vega que la rodean. Todo parte del sitio real: la ortofoto oficial, el modelo del terreno del IGN y fotos tomadas en la finca. Desliza sobre cada imagen para comparar.</p>
   </section>
 
@@ -190,7 +305,10 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
       <div class="ficha"><dt class="etiqueta">Relleno</dt><dd class="ficha__dato"><span class="cifra">1,97</span> mill. m³</dd><dd class="ficha__nota">tierras y materiales inertes</dd></div>
       <div class="ficha"><dt class="etiqueta">Altura de relleno</dt><dd class="ficha__dato">hasta <span class="cifra">14</span> m</dd><dd class="ficha__nota">en la zona central y norte</dd></div>
       <div class="ficha"><dt class="etiqueta">Cota final</dt><dd class="ficha__dato"><span class="cifra">505–513</span> m</dd><dd class="ficha__nota">la del terreno original</dd></div>
-      <div class="ficha ficha--verde"><dt class="etiqueta">Uso final</dt><dd class="ficha__dato">Agrícola</dd><dd class="ficha__nota">sin arbolado nuevo (BIC Salinas de Espartinas)</dd></div>
+      <div class="ficha ficha--giro" id="ficha-uso"><dt class="oculto">Uso del suelo</dt><dd class="caras">
+        <div class="cara cara--fin"><span class="etiqueta">Uso final</span><span class="ficha__dato" style="margin-top:auto">Agrícola</span><span class="ficha__nota">sin arbolado nuevo (BIC Salinas de Espartinas)</span></div>
+        <div class="cara cara--hoy" aria-hidden="true"><span class="etiqueta">Uso hoy</span><span class="ficha__dato" style="margin-top:auto">Gravera</span><span class="ficha__nota">antigua explotación de áridos</span></div>
+      </dd></div>
     </dl>
     <p class="fuente">Fuente: Proyecto de control arqueológico INF/0218/2023 (GEA Arqueólogos, julio de 2026) y estudio topográfico de la explotación (septiembre de 2023).</p>
   </section>
@@ -199,7 +317,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   <section class="seccion caja" aria-labelledby="t-aire">
     <div class="cabeza">
       <p class="cabeza__num etiqueta"><span>01</span> Desde el aire</p>
-      <h2 class="titular cabeza__titular" id="t-aire">La gravera vuelve a ser vega</h2>
+      <h2 class="titular cabeza__titular" id="t-aire" data-entra>La gravera vuelve a ser <span class="giro" data-giro><span class="giro__cara">vega</span><span class="giro__cara giro__cara--verde" aria-hidden="true">vega</span></span></h2>
     </div>
 
     <div class="vista">
@@ -234,8 +352,10 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
     <div class="vista">
       <h3>Hasta dónde se rellena</h3>
       <p class="vista__texto">El hueco se rellena hasta la cota que tenía el terreno antes de la extracción, según el modelo de reposición del estudio topográfico. Esa cota cambia en cada punto: de 505 metros junto a la M-307 a 513 metros en el norte, junto a la vía, con una pendiente suave hacia la vega. La vía queda entre 1 y 3 metros por encima, como ahora.</p>
-      <figure class="fijo">
-        <img src="img/cotas.jpg" alt="Ortofoto de la finca con la altura de relleno en azul, más oscuro donde hay más relleno, hasta 14 metros, y las curvas de la cota final cada metro, de 505 a 513" width="2400" height="1350">
+      <figure class="fijo cotas" id="cotas">
+        <img src="img/aerea-antes.jpg" alt="" width="2400" height="1350">
+        <img class="cotas__capa" src="img/cotas.jpg" alt="Ortofoto de la finca con la altura de relleno en azul, más oscuro donde hay más relleno, hasta 14 metros, y las curvas de la cota final cada metro, de 505 a 513" width="2400" height="1350">
+        <div class="linea-corte" aria-hidden="true"></div>
       </figure>
       <p class="pie">En azul, la altura de relleno en cada punto (de 0 a 14 m); en blanco, las curvas de la cota final cada metro. Las cotas salen del plano «Estado inicial teórico» del estudio topográfico y coinciden con su tabla de perfiles con un margen medio de 0,3 m.</p>
     </div>
@@ -283,15 +403,24 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
       <p class="pie">Modelo digital del terreno del IGN con la ortofoto PNOA 2023 encima. Tramo de 600 × 630 m. El relieve está exagerado tres veces para que se lea la profundidad; las capas del subsuelo son orientativas.</p>
     </div>
 
-    <div class="vista">
-      <h3>Cómo se rellena</h3>
-      <p class="vista__texto">El relleno sube por tongadas, extendidas y compactadas, hasta la cota del terreno original. Al final se extiende la tierra vegetal y la finca vuelve al cultivo.</p>
-      <figure class="fijo">
-        <video src="img/fases.mp4" poster="img/fases-poster.jpg" autoplay muted loop playsinline aria-label="Animación: el hueco de la maqueta se rellena en cuatro tongadas y al final aparecen los cultivos"></video>
+    <div class="relleno" id="relleno">
+      <div class="relleno__cabeza" style="display:grid;gap:10px">
+        <h3 style="font-weight:720;font-stretch:88%;font-size:clamp(1.3rem,4vw,1.75rem);letter-spacing:-.02em;line-height:1.08">Cómo se rellena</h3>
+        <p class="vista__texto">Baja despacio: el hueco se va llenando por tongadas, extendidas y compactadas, hasta la cota del terreno original. Al final se extiende la tierra vegetal y la finca vuelve al cultivo.</p>
+      </div>
+      <figure class="fijo relleno__video">
+        <video src="img/fases-scroll.mp4" poster="img/fases-poster.jpg" muted playsinline preload="auto" aria-label="Animación: el hueco de la maqueta se rellena en cuatro tongadas y al final aparecen los cultivos"></video>
         <span class="chip arriba etiqueta" aria-hidden="true">Borrador</span>
       </figure>
-      <p class="pie">Borrador en baja para validar la cámara y los tiempos; la versión final irá a más calidad.</p>
+      <ol class="pasos" aria-label="Fases del relleno">
+        <li class="paso activo"><span class="cifra">1</span><b>El hueco, hoy</b><small>hasta 13 m por debajo del terreno original</small></li>
+        <li class="paso"><span class="cifra">2</span><b>Relleno por tongadas</b><small>tierras y materiales inertes, extendidos y compactados</small></li>
+        <li class="paso"><span class="cifra">3</span><b>A la cota original</b><small>entre 505 y 513 m, con pendiente suave hacia la vega</small></li>
+        <li class="paso"><span class="cifra">4</span><b>Tierra vegetal y cultivo</b><small>la finca vuelve a ser tierra de labor</small></li>
+      </ol>
+      <div class="relleno__barra" aria-hidden="true"><span></span></div>
     </div>
+    <p class="pie">Borrador en baja para validar la cámara y los tiempos; la versión final irá a más calidad.</p>
   </section>
 
   <!-- 03 · En 3D -->
@@ -442,7 +571,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
     <div class="vista">
       <h3>Así es un tramo</h3>
       <p class="vista__texto">De cerca, al pie del terraplén de la vía: el murete de hormigón abajo y la malla verde encima, tensada entre postes.</p>
-      <figure class="fijo">
+      <figure class="fijo" id="tramo">
         <img src="img/valla-tramo.jpg" alt="Primer plano del cierre: murete de hormigón gris, postes verdes y malla de simple torsión verde, con la finca detrás" width="2400" height="1350">
         <div class="rotulos" aria-hidden="true">
           <i class="rot" style="--x:28%;--y:28%"><span>Poste de acero<small>cada 3 m</small></span></i>
@@ -455,9 +584,21 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
     <div class="vista">
       <h3>Desde la vía</h3>
       <p class="vista__texto">El cierre al pie del terraplén de la vía, con la finca detrás.</p>
-      <figure class="par" id="par-via">
-        <img class="a" src="img/valla-via-hoy.jpg" alt="Foto desde el terraplén de la vía: la finca con matorral y una alambrada vieja" width="2400" height="1349">
-        <img class="b" src="img/valla-via-con.jpg" alt="La misma vista con el murete de hormigón y la malla verde al pie del terraplén" width="2400" height="1349">
+      <figure class="par revela" id="rev-via">
+        <div class="revela__lienzo">
+          <img src="img/valla-via-hoy.jpg" alt="Foto desde el terraplén de la vía: la finca con matorral y una alambrada vieja" width="2400" height="1349">
+          <div class="revela__b">
+            <img src="img/valla-via-con.jpg" alt="La misma vista con el murete de hormigón y la malla verde al pie del terraplén" width="2400" height="1349">
+            <div class="rotulos" aria-hidden="true">
+              <i class="rot" style="--x:55%;--y:64%"><span>Poste de acero<small>cada 3 m</small></span></i>
+              <i class="rot izq" style="--x:24%;--y:74%"><span>Malla de simple torsión<small>hasta 2,00 m</small></span></i>
+              <i class="rot" style="--x:66%;--y:83%"><span>Murete de hormigón<small>0,80 m</small></span></i>
+            </div>
+          </div>
+        </div>
+        <div class="linea-corte" aria-hidden="true"></div>
+        <span class="chip izq etiqueta" aria-hidden="true">Hoy</span>
+        <span class="chip der verde etiqueta" aria-hidden="true">Con el cierre</span>
       </figure>
       <div class="mandos">
         <div class="segmento" role="group" aria-label="Cierre desde la vía">
@@ -467,20 +608,43 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
       </div>
     </div>
 
-    <div class="vista lado">
-      <figure class="par vertical" id="par-entrada">
-        <img class="a" src="img/valla-entrada-hoy.jpg" alt="Fotograma de vídeo: la salida de la finca a la carretera, con una puerta vieja y un poste de madera" width="576" height="1024">
-        <img class="b" src="img/valla-entrada-con.jpg" alt="La misma salida arreglada: camino de zahorra hasta la puerta de malla, césped y setos a los lados del murete, y el cartel de Reverso junto a la puerta" width="1080" height="1935">
+    <div class="vista lado entrada" id="entrada">
+      <figure class="par vertical revela" id="rev-entrada">
+        <div class="revela__lienzo">
+          <img src="img/valla-entrada-hoy.jpg" alt="Fotograma de vídeo: la salida de la finca a la carretera, con camino de tierra, una puerta vieja y un poste de madera" width="576" height="1024">
+          <div class="revela__b">
+            <img src="img/valla-entrada-con.jpg" alt="La misma salida arreglada: camino de zahorra hasta la puerta corredera, césped y setos a los lados del murete, y el cartel de Reverso junto a la puerta" width="1080" height="1935">
+          </div>
+          <button type="button" class="punto" data-n="1" style="--x:50%;--y:51%" aria-label="1, puerta corredera">1</button>
+          <button type="button" class="punto" data-n="2" style="--x:23.5%;--y:40%" aria-label="2, cartel de Reverso">2</button>
+          <button type="button" class="punto" data-n="3" style="--x:37%;--y:60.5%" aria-label="3, murete de hormigón">3</button>
+          <button type="button" class="punto" data-n="4" style="--x:90%;--y:51%" aria-label="4, malla de simple torsión">4</button>
+          <button type="button" class="punto" data-n="5" style="--x:62%;--y:80%" aria-label="5, camino de zahorra">5</button>
+          <button type="button" class="punto" data-n="6" style="--x:12%;--y:69%" aria-label="6, césped y setos">6</button>
+        </div>
+        <div class="linea-corte" aria-hidden="true"></div>
+        <span class="chip izq etiqueta" aria-hidden="true">Hoy</span>
+        <span class="chip der verde etiqueta" aria-hidden="true">Con el cierre</span>
+        <div class="revela__ficha" aria-live="polite"><b></b><small></small></div>
+        <button type="button" class="revela__cerrar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>Ver entera</button>
       </figure>
-      <div style="display:grid;gap:14px">
+      <div class="entrada__texto">
         <h3>En la entrada</h3>
-        <p class="vista__texto">La salida a la M-307 con la puerta corredera nueva, el cartel de Reverso, un camino de zahorra del ancho de la puerta para los camiones y franjas de césped y setos bajos a los lados. Sin árboles nuevos, por estar en el BIC.</p>
+        <p class="vista__texto">Así cambia la salida a la M-307. Pulsa cada punto para acercarte; con «Hoy» ves cómo está ahora.</p>
         <div class="mandos">
           <div class="segmento" role="group" aria-label="Cierre en la entrada">
             <button type="button" data-v="a">Hoy</button>
             <button type="button" data-v="b" aria-pressed="true">Con el cierre</button>
           </div>
         </div>
+        <ol class="cambios" aria-label="Lo que cambia en la entrada">
+          <li><button type="button" data-n="1" aria-pressed="false"><span class="n">1</span><span><b>Puerta corredera</b><small>8 m, para los camiones</small></span></button></li>
+          <li><button type="button" data-n="2" aria-pressed="false"><span class="n">2</span><span><b>Cartel de Reverso</b><small>con el teléfono de la entrada de camiones</small></span></button></li>
+          <li><button type="button" data-n="3" aria-pressed="false"><span class="n">3</span><span><b>Murete de hormigón</b><small>0,80 m de alto, 20 cm de grueso</small></span></button></li>
+          <li><button type="button" data-n="4" aria-pressed="false"><span class="n">4</span><span><b>Malla verde</b><small>de simple torsión, hasta 2,00 m sobre el terreno</small></span></button></li>
+          <li><button type="button" data-n="5" aria-pressed="false"><span class="n">5</span><span><b>Camino de zahorra</b><small>del ancho de la puerta, en vez de tierra</small></span></button></li>
+          <li><button type="button" data-n="6" aria-pressed="false"><span class="n">6</span><span><b>Césped y setos bajos</b><small>a los lados; sin árboles nuevos, por el BIC</small></span></button></li>
+        </ol>
         <p class="pie">Fotomontajes sobre fotos reales de la finca. El cartel lleva el logo oficial de Reverso.</p>
       </div>
     </div>
@@ -504,30 +668,8 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   </footer>
 </main>
 
-<script>
-document.querySelectorAll('.ba').forEach(function (fig) {
-  var rango = fig.querySelector('input[type="range"]');
-  var botones = fig.parentElement.querySelectorAll('.segmento button');
-  function poner(v) {
-    fig.style.setProperty('--pos', v + '%');
-    rango.value = v;
-    botones.forEach(function (b) { b.setAttribute('aria-pressed', String(Number(b.dataset.a) === Number(v))); });
-  }
-  rango.addEventListener('input', function () { poner(rango.value); });
-  botones.forEach(function (b) { b.addEventListener('click', function () { poner(Number(b.dataset.a)); }); });
-});
-document.querySelectorAll('.par').forEach(function (fig) {
-  var botones = fig.parentElement.querySelectorAll('.segmento button');
-  fig.classList.add('con');
-  botones.forEach(function (b) {
-    b.addEventListener('click', function () {
-      fig.classList.toggle('con', b.dataset.v === 'b');
-      botones.forEach(function (o) { o.setAttribute('aria-pressed', String(o === b)); });
-    });
-  });
-});
-var per = document.getElementById('ver-perimetro');
-per.addEventListener('change', function () { document.getElementById('ba-aerea').classList.toggle('con-perimetro', per.checked); });
-</script>
+<script src="js/gsap.min.js"></script>
+<script src="js/ScrollTrigger.min.js"></script>
+<script src="js/finca.js"></script>
 </body>
 </html>
