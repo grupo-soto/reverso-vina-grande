@@ -13,8 +13,11 @@
 
   /* ---------- utilidades de movimiento ---------- */
   // el giro de la web de Reverso: la palabra en tierra da la vuelta y sale en verde
+  // cada cara se enseña según el lado que mira (no se fía de backface-visibility, que falla en Firefox/Zen)
+  const lado = (el) => el.classList.toggle('cara-tierra', Math.abs(gsap.getProperty(el, 'rotationX')) % 360 < 90);
   const girar = (el, delay = 0) => gsap.fromTo(el, { rotationX: 0 }, {
-    rotationX: 180, duration: 1.4, ease: 'power3.inOut', delay, transformPerspective: 700, transformOrigin: '50% 55%'
+    rotationX: 180, duration: 1.4, ease: 'power3.inOut', delay, transformPerspective: 700, transformOrigin: '50% 55%',
+    onStart: () => lado(el), onUpdate: () => lado(el)
   });
   // titulares: cada palabra entra girando desde abajo
   function partir(el) {
@@ -43,7 +46,7 @@
   function entraTitular(el, conScroll) {
     const giro = $('[data-giro]', el);
     const ins = partir(el);
-    if (giro) gsap.set(giro, { rotationX: 0, transformPerspective: 700 });
+    if (giro) { gsap.set(giro, { rotationX: 0, transformPerspective: 700 }); giro.classList.add('cara-tierra'); }
     const tl = gsap.timeline({
       paused: true,
       onComplete: () => $$('.pal', el).forEach((p) => { p.style.overflow = 'visible'; })
