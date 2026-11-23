@@ -209,10 +209,59 @@ h2 { margin: 0; font-weight: 500; font-size: clamp(1.25rem, 3.4vw, 1.4rem); line
     <p class="col pie-foto">Foto de la visita del 14-10-2026. El cielo, el horizonte y la arboleda son los píxeles originales de la cámara.</p>
   </section>
 
+  <section class="vista" aria-labelledby="t-corte">
+    <div class="col vista-cab">
+      <h2 id="t-corte">Lo que no se ve desde arriba: el hueco</h2>
+      <p>Maqueta del terreno real cortada por la parte más honda de la finca, con la vía al fondo a la izquierda y la M-307 a la derecha. Hoy el corte muestra la gravera excavada en las capas de limos, arenas y gravas. Restaurada, el hueco queda ocupado por el relleno (en gris), con la tierra vegetal y los cultivos encima.</p>
+    </div>
+    <figure class="ba ancho" id="ba-corte" style="width:100%">
+      <img src="img/corte-antes.jpg" alt="Maqueta 3D del terreno actual cortada: en la cara del corte se ve el hueco de la gravera, de hasta 13 metros de profundidad" width="2400" height="1350">
+      <div class="despues"><img src="img/corte-despues.jpg" alt="La misma maqueta restaurada: el hueco relleno, en gris en la cara del corte, y la superficie convertida en parcelas de cultivo" width="2400" height="1350"></div>
+      <div class="raya" aria-hidden="true"></div>
+      <div class="tirador" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l-5 6 5 6M15 6l5 6-5 6"/></svg></div>
+      <span class="chip izq" aria-hidden="true">Hoy</span>
+      <span class="chip der" aria-hidden="true">Restaurada</span>
+      <input type="range" min="0" max="100" value="50" step="0.5" aria-label="Comparar la maqueta cortada hoy y restaurada">
+    </figure>
+    <div class="col mandos">
+      <div class="segmento" role="group" aria-label="Maqueta cortada">
+        <button type="button" data-a="0">Restaurada</button>
+        <button type="button" data-a="50" aria-pressed="true">Comparar</button>
+        <button type="button" data-a="100">Hoy</button>
+      </div>
+    </div>
+    <p class="col pie-foto">Modelo digital del terreno del IGN (MDT05) con la ortofoto PNOA 2023 encima. Tramo de 600 × 630 m. El relieve está exagerado tres veces para que se lea la profundidad; las capas del subsuelo son orientativas.</p>
+  </section>
+
+  <section class="vista" aria-labelledby="t-dron">
+    <div class="col vista-cab">
+      <h2 id="t-dron">La finca en 3D, desde los cerros</h2>
+      <p>El mismo terreno visto como desde un dron, a escala real, mirando hacia la vega del Jarama. Restaurada, la franja entre la vía y la M-307 se lee como una parcela más de la vega.</p>
+    </div>
+    <figure class="ba ancho" id="ba-dron" style="width:100%">
+      <img src="img/dron-antes.jpg" alt="Vista 3D de dron del terreno actual: la gravera entre la vía y la carretera, con la vega del Jarama al fondo" width="2400" height="1350">
+      <div class="despues"><img src="img/dron-despues.jpg" alt="La misma vista con la franja convertida en parcelas de cultivo al nivel de la vía" width="2400" height="1350"></div>
+      <div class="raya" aria-hidden="true"></div>
+      <div class="tirador" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l-5 6 5 6M15 6l5 6-5 6"/></svg></div>
+      <span class="chip izq" aria-hidden="true">Hoy</span>
+      <span class="chip der" aria-hidden="true">Restaurada</span>
+      <input type="range" min="0" max="100" value="50" step="0.5" aria-label="Comparar la vista de dron hoy y restaurada">
+    </figure>
+    <div class="col mandos">
+      <div class="segmento" role="group" aria-label="Vista de dron">
+        <button type="button" data-a="0">Restaurada</button>
+        <button type="button" data-a="50" aria-pressed="true">Comparar</button>
+        <button type="button" data-a="100">Hoy</button>
+      </div>
+    </div>
+    <p class="col pie-foto">Modelo digital del terreno del IGN y ortofotos PNOA 2023, sin exagerar el relieve.</p>
+  </section>
+
   <section class="col bloque" aria-labelledby="t-como">
     <h2 id="t-como">Cómo están hechas</h2>
     <p>Cada pareja parte de una imagen real: la ortofoto PNOA de 2023 o las fotos que tomamos en la visita. El «después» es esa misma imagen, en la que solo se ha cambiado el terreno de la gravera.</p>
     <p>En la vista aérea, la zona cambiada coincide con el perímetro del relleno del estudio topográfico, y fuera de él no se ha tocado nada. En las fotos se conservan los píxeles originales del cielo, los cerros, la vía y la arboleda. El cereal que se ve es orientativo.</p>
+    <p>El 3D está hecho con el modelo digital del terreno del IGN. Para la finca restaurada, el hueco se rellena con una superficie suave que se apoya en el terreno de alrededor, con la vía y la M-307 como bordes. Medido sobre ese modelo, el relleno sale de 1.936.878 m³, un 1,7 % menos que los 1.970.802 m³ del estudio topográfico.</p>
   </section>
 
   <section class="col bloque" aria-labelledby="t-validar">
@@ -221,8 +270,9 @@ h2 { margin: 0; font-weight: 500; font-size: clamp(1.25rem, 3.4vw, 1.4rem); line
       <li>Si el acabado agrícola es el que queréis enseñar, o si preferís otro cultivo o la tierra solo labrada.</li>
       <li>Si la cota de la vía es la referencia correcta en toda la finca.</li>
       <li>Si hacen falta más puntos de vista, por ejemplo desde la M-307 o desde la entrada.</li>
+      <li>Si el corte en 3D se entiende o preferís verlo sin exagerar el relieve.</li>
     </ol>
-    <p>Con el visto bueno sigo con el terreno en 3D a partir de los datos LiDAR del IGN, para enseñar la profundidad real del hueco y cómo se rellena por fases. Con esas piezas montaré el dosier final para la administración.</p>
+    <p>Con el visto bueno sigo con un vídeo corto del relleno por fases y monto el dosier final para la administración.</p>
   </section>
 
   <p class="col firma">Recuperaciones y Vertidos Soto, S.L. · Grupo Soto. Imágenes de trabajo; no sustituyen a los planos del proyecto.</p>
