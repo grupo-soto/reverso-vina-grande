@@ -480,6 +480,34 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
       </div>
       <p class="pie">Modelo digital del terreno del IGN y ortofotos PNOA 2023, sin exagerar el relieve. La finca restaurada sigue las cotas del estudio topográfico.</p>
     </div>
+
+    <div class="vista">
+      <h3>Más vistas</h3>
+      <div class="mandos">
+        <div class="segmento vistas" role="group" aria-label="Elegir la vista 3D">
+          <button type="button" data-vista="vega3d" aria-pressed="true">Desde la vega</button>
+          <button type="button" data-vista="hueco3d" aria-pressed="false">Sobre lo más hondo</button>
+          <button type="button" data-vista="sur3d" aria-pressed="false">Desde el borde sur</button>
+        </div>
+      </div>
+      <figure class="ba" id="ba-vistas">
+        <img src="img/vega3d-antes.jpg" alt="Vista 3D desde la vega: la gravera entre la M-307 y la vía, con los cerros detrás" width="2400" height="1350">
+        <div class="despues"><img src="img/vega3d-despues.jpg" alt="La misma vista con la franja convertida en parcelas de cultivo" width="2400" height="1350"></div>
+        <div class="raya" aria-hidden="true"></div>
+        <div class="tirador" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l-5 6 5 6M15 6l5 6-5 6"/></svg></div>
+        <span class="chip izq etiqueta" aria-hidden="true">Hoy</span>
+        <span class="chip der verde etiqueta" aria-hidden="true">Restaurada</span>
+        <input type="range" min="0" max="100" value="50" step="0.5" aria-label="Comparar la vista 3D elegida hoy y restaurada">
+      </figure>
+      <div class="mandos">
+        <div class="segmento" role="group" aria-label="Vista 3D elegida">
+          <button type="button" data-a="100">Hoy</button>
+          <button type="button" data-a="50" aria-pressed="true">Comparar</button>
+          <button type="button" data-a="0">Restaurada</button>
+        </div>
+      </div>
+      <p class="pie" id="vistas-pie">Desde la vega del Jarama, mirando a la finca y a los cerros: la franja restaurada queda entre la M-307 y la vía.</p>
+    </div>
   </section>
 
   <!-- 04 · A pie de finca -->
@@ -525,6 +553,48 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
       </figure>
       <div class="mandos">
         <div class="segmento" role="group" aria-label="Vista desde la explanada">
+          <button type="button" data-a="100">Hoy</button>
+          <button type="button" data-a="50" aria-pressed="true">Comparar</button>
+          <button type="button" data-a="0">Restaurada</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="vista">
+      <h3>Junto a la vía</h3>
+      <p class="vista__texto">Los acopios de piedra y el matorral desaparecen: el campo llega al pie del terraplén de la vía, que sigue quedando por encima.</p>
+      <figure class="ba" id="ba-acopios">
+        <img src="img/acopios-antes.jpg" alt="Foto de la visita: acopios de piedra y matorral en primer plano, con un tren de mercancías en la vía y casas en la loma del fondo" width="2400" height="1349">
+        <div class="despues"><img src="img/acopios-despues.jpg" alt="La misma foto con el suelo convertido en un campo de cereal recién nacido hasta el pie de la vía" width="2400" height="1349"></div>
+        <div class="raya" aria-hidden="true"></div>
+        <div class="tirador" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l-5 6 5 6M15 6l5 6-5 6"/></svg></div>
+        <span class="chip izq etiqueta" aria-hidden="true">Hoy</span>
+        <span class="chip der verde etiqueta" aria-hidden="true">Restaurada</span>
+        <input type="range" min="0" max="100" value="50" step="0.5" aria-label="Comparar la vista junto a la vía hoy y restaurada">
+      </figure>
+      <div class="mandos">
+        <div class="segmento" role="group" aria-label="Vista junto a la vía">
+          <button type="button" data-a="100">Hoy</button>
+          <button type="button" data-a="50" aria-pressed="true">Comparar</button>
+          <button type="button" data-a="0">Restaurada</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="vista">
+      <h3>Desde el borde del hueco</h3>
+      <p class="vista__texto">La hondonada y el caballón de tierra se rellenan hasta la altura de las parcelas de la vega, que empiezan detrás de la arboleda.</p>
+      <figure class="ba" id="ba-vega2">
+        <img src="img/vega2-antes.jpg" alt="Foto de la visita: hondonada con matorral y un caballón de tierra oscura, con la arboleda de la vega al fondo" width="2400" height="1349">
+        <div class="despues"><img src="img/vega2-despues.jpg" alt="La misma foto con el terreno lleno y sembrado de cereal hasta la arboleda" width="2400" height="1349"></div>
+        <div class="raya" aria-hidden="true"></div>
+        <div class="tirador" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l-5 6 5 6M15 6l5 6-5 6"/></svg></div>
+        <span class="chip izq etiqueta" aria-hidden="true">Hoy</span>
+        <span class="chip der verde etiqueta" aria-hidden="true">Restaurada</span>
+        <input type="range" min="0" max="100" value="50" step="0.5" aria-label="Comparar la vista desde el borde del hueco hoy y restaurada">
+      </figure>
+      <div class="mandos">
+        <div class="segmento" role="group" aria-label="Vista desde el borde del hueco">
           <button type="button" data-a="100">Hoy</button>
           <button type="button" data-a="50" aria-pressed="true">Comparar</button>
           <button type="button" data-a="0">Restaurada</button>
@@ -656,6 +726,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
     </div>
     <div class="notas">
       <p>Las fotos y la ortofoto son reales. En cada «después» solo se ha cambiado el terreno de la gravera: en la vista aérea, dentro del perímetro del relleno del estudio topográfico; en las fotos, el suelo, conservando los píxeles originales del cielo, los cerros, la vía y la arboleda. El cereal que se ve es orientativo.</p>
+      <p>En las fotos, la cota se respeta en relación con lo que se ve: el campo llega al pie del terraplén de la vía, que queda entre 1 y 3 metros por encima, y en el lado de la vega queda a la altura de sus parcelas. La cámara sigue donde se hizo la foto, así que las fotos enseñan el aspecto, no miden alturas; las alturas exactas son las del 3D y el plano de cotas.</p>
       <p>El 3D está hecho con el modelo digital del terreno del IGN. La finca restaurada sigue el modelo de reposición del estudio topográfico, curva a curva, y se ha comprobado contra su tabla de perfiles: la diferencia media es de 0,3 metros.</p>
     </div>
   </section>

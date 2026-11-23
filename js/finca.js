@@ -74,7 +74,7 @@
   /* ---------- 1. comparadores con deslizador (.ba) ---------- */
   $$('.ba').forEach((fig) => {
     const rango = $('input[type="range"]', fig);
-    const botones = $$('.segmento button', fig.parentElement);
+    const botones = $$('.segmento button[data-a]', fig.parentElement);
     const rots = $$('.rot', fig);
     let tween = null, rotsFuera = false;
     const pinta = (v) => { fig.style.setProperty('--pos', v + '%'); rango.value = v; };
@@ -89,6 +89,16 @@
       const o = { p: Number(rango.value) };
       tween = gsap.to(o, { p: v, duration: 0.9, ease: 'power3.inOut', onUpdate: () => pinta(o.p) });
     }));
+    // barrido de «Hoy» a «Restaurada» y vuelta al medio (al aparecer y al cambiar de vista)
+    fig._barrer = (delay = 0.35) => {
+      if (tween) tween.kill();
+      if (!anim) { pinta(50); marcar(50); return; }
+      const o = { p: 100 }; pinta(100); marcar(50);
+      tween = gsap.timeline({ delay, onComplete: () => { tween = null; } })
+        .to(o, { p: 0, duration: 1.7, ease: 'power2.inOut', onUpdate: () => pinta(o.p) })
+        .to(o, { p: 50, duration: 1, ease: 'power3.inOut', onUpdate: () => pinta(o.p) }, '+=.4')
+        .add(() => sacarRots(), '-=.5');
+    };
     if (!anim) return;
     // al aparecer: se abre en «Hoy», barre hasta «Restaurada» y vuelve al medio
     pinta(100); gsap.set(fig, { clipPath: CERRADO });
@@ -98,14 +108,35 @@
       onEnter: () => {
         abrir(fig);
         if (fig.dataset.tocado) return sacarRots();
-        const o = { p: 100 };
-        tween = gsap.timeline({ delay: 0.35, onComplete: () => { tween = null; marcar(50); } })
-          .to(o, { p: 0, duration: 1.7, ease: 'power2.inOut', onUpdate: () => pinta(o.p) })
-          .to(o, { p: 50, duration: 1, ease: 'power3.inOut', onUpdate: () => pinta(o.p) }, '+=.4')
-          .add(() => sacarRots(), '-=.5');
+        fig._barrer();
       }
     });
   });
+
+  // «Más vistas» del 3D: cambia la pareja de imágenes y vuelve a barrer
+  const VISTAS = {
+    vega3d: ['Vista 3D desde la vega: la gravera entre la M-307 y la vía, con los cerros detrás', 'La misma vista con la franja convertida en parcelas de cultivo',
+      'Desde la vega del Jarama, mirando a la finca y a los cerros: la franja restaurada queda entre la M-307 y la vía.'],
+    hueco3d: ['Vista 3D desde los cerros sobre la zona más honda de la gravera', 'La misma vista con el hueco relleno y dividido en parcelas',
+      'Desde los cerros, sobre la zona más honda: donde hoy está el hueco, parcelas de cultivo a la cota del terreno original.'],
+    sur3d: ['Vista 3D a poca altura desde el borde sur, mirando a lo largo de la finca hacia el norte', 'La misma vista con la finca sembrada',
+      'Desde el borde sur, a poca altura y mirando hacia el norte: la finca queda como un solo campo entre la vía y la M-307.']
+  };
+  const bav = $('#ba-vistas');
+  if (bav) {
+    const [ia, ib] = $$('img', bav), pie = $('#vistas-pie');
+    const sel = $$('.vistas button', bav.parentElement);
+    sel.forEach((b) => b.addEventListener('click', () => {
+      const v = b.dataset.vista, t = VISTAS[v];
+      sel.forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+      const poner = () => {
+        ia.src = `img/${v}-antes.jpg`; ia.alt = t[0]; ib.src = `img/${v}-despues.jpg`; ib.alt = t[1]; pie.textContent = t[2];
+        bav._barrer(0.2);
+      };
+      if (!anim) return poner();
+      gsap.timeline().to([ia, ib], { autoAlpha: 0.2, duration: 0.25 }).add(poner).to([ia, ib], { autoAlpha: 1, duration: 0.4 });
+    }));
+  }
   const per = $('#ver-perimetro');
   if (per) per.addEventListener('change', () => $('#ba-aerea').classList.toggle('con-perimetro', per.checked));
 
