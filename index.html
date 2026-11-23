@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Viña Grande, antes y después</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;1,8..60,400&display=swap">
+<style>
+:root {
+  --fondo: #FAF9F5;
+  --panel: #F0EEE6;
+  --superficie: #FFFFFF;
+  --texto: #141413;
+  --texto-2: #5E5D59;
+  --borde: #E8E6DC;
+  --acento: #D97757;
+  --acento-hover: #C6613F;
+  --chip: rgba(250, 249, 245, .82);
+  --chip-texto: #141413;
+  --f-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-ui: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fondo: #262624; --panel: #30302E; --superficie: #1F1E1D; --texto: #FAF9F5; --texto-2: #C2C0B6;
+    --borde: #3E3E38; --chip: rgba(38, 38, 36, .78); --chip-texto: #FAF9F5; color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--fondo); color: var(--texto);
+  font-family: var(--f-serif); font-size: 1.0625rem; line-height: 1.6;
+  padding: 0 max(16px, env(safe-area-inset-right, 0px)) 4rem max(16px, env(safe-area-inset-left, 0px));
+}
+a { color: var(--acento); }
+a:hover { color: var(--acento-hover); }
+.col { max-width: 700px; margin: 0 auto; }
+.ancho { max-width: 1040px; margin: 0 auto; }
+.pagina { display: grid; gap: clamp(2.5rem, 6vw, 3.5rem); padding-top: clamp(1.75rem, 5vw, 3.5rem); }
+
+/* cabecera */
+.cabecera { display: grid; gap: .9rem; }
+.meta { margin: 0; font: 400 .8125rem/1.4 var(--f-ui); color: var(--texto-2); }
+h1 { margin: 0; font-weight: 500; font-size: clamp(1.9rem, 5.5vw, 2.5rem); line-height: 1.15; letter-spacing: -.01em; text-wrap: balance; }
+.entrada { margin: 0; color: var(--texto-2); }
+
+/* cifras */
+.cifras { margin: 0; background: var(--panel); border-radius: 14px; padding: .4rem 1.1rem; }
+.cifras > div { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .1rem 1rem; padding: .7rem 0; }
+.cifras > div + div { border-top: 1px solid var(--borde); }
+.cifras dt { font: 400 .875rem/1.4 var(--f-ui); color: var(--texto-2); }
+.cifras dd { margin: 0; font: 500 .9375rem/1.4 var(--f-ui); text-align: right; font-variant-numeric: tabular-nums; }
+.cifras dd small { display: block; font-weight: 400; font-size: .8125rem; color: var(--texto-2); }
+.fuente { margin: .7rem 0 0; font: 400 .8125rem/1.5 var(--f-ui); color: var(--texto-2); }
+
+/* vistas */
+.vista { display: grid; gap: .85rem; }
+.vista-cab { display: grid; gap: .4rem; }
+h2 { margin: 0; font-weight: 500; font-size: clamp(1.25rem, 3.4vw, 1.4rem); line-height: 1.25; text-wrap: balance; }
+.vista-cab p { margin: 0; color: var(--texto-2); }
+
+.ba {
+  --pos: 50%;
+  position: relative; margin: 0; overflow: hidden; border-radius: 14px; border: 1px solid var(--borde);
+  aspect-ratio: 16 / 9; max-width: 100%; background: var(--panel);
+  user-select: none; -webkit-user-select: none;
+}
+.ba img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+.ba .despues { position: absolute; inset: 0; clip-path: inset(0 0 0 var(--pos)); }
+.ba .per { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0; transition: opacity .25s ease; }
+.ba .per polygon { fill: none; stroke: var(--acento); stroke-width: 9; stroke-dasharray: 34 18; stroke-linejoin: round; }
+.ba.con-perimetro .per { opacity: 1; }
+.ba .raya { position: absolute; top: 0; bottom: 0; left: var(--pos); width: 2px; margin-left: -1px; background: #fff; pointer-events: none; }
+.ba .tirador {
+  position: absolute; top: 50%; left: var(--pos); width: 40px; height: 40px; margin: -20px 0 0 -20px;
+  border-radius: 50%; background: #fff; border: 2px solid var(--acento); box-shadow: 0 1px 4px rgba(20, 20, 19, .18);
+  pointer-events: none; display: grid; place-items: center;
+}
+.ba .tirador svg { width: 20px; height: 20px; }
+.ba .tirador path { fill: none; stroke: #141413; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.ba .chip {
+  position: absolute; bottom: .65rem; padding: .2rem .6rem; border-radius: 999px;
+  font: 500 .8125rem/1.3 var(--f-ui); color: var(--chip-texto); background: var(--chip);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); pointer-events: none;
+}
+.ba .chip.izq { left: .65rem; }
+.ba .chip.der { right: .65rem; }
+.ba input[type="range"] { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize; touch-action: pan-y; }
+.ba:has(input:focus-visible) { outline: 2px solid var(--acento); outline-offset: 3px; }
+
+.mandos { display: flex; flex-wrap: wrap; align-items: center; gap: .7rem 1.25rem; }
+.segmento { display: inline-flex; gap: 2px; background: var(--panel); border-radius: 999px; padding: 3px; }
+.segmento button {
+  font: 500 .875rem/1 var(--f-ui); color: var(--texto-2); background: transparent; border: 1px solid transparent;
+  border-radius: 999px; padding: .6rem 1rem; min-height: 40px; cursor: pointer;
+}
+.segmento button:hover { color: var(--texto); }
+.segmento button[aria-pressed="true"] { background: var(--superficie); border-color: var(--borde); color: var(--texto); }
+.segmento button:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
+.conmutador { display: inline-flex; align-items: center; gap: .55rem; font: 400 .875rem/1.4 var(--f-ui); color: var(--texto-2); cursor: pointer; min-height: 40px; }
+.conmutador input { width: 1.1rem; height: 1.1rem; accent-color: var(--acento); margin: 0; }
+.conmutador input:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
+.pie-foto { margin: 0; font: 400 .8125rem/1.5 var(--f-ui); color: var(--texto-2); max-width: 700px; }
+
+/* cierre */
+.bloque { display: grid; gap: .8rem; }
+.bloque p { margin: 0; }
+.bloque ol { margin: 0; padding-left: 1.3rem; display: grid; gap: .5rem; }
+.bloque li::marker { color: var(--texto-2); font-family: var(--f-ui); font-size: .9em; }
+.firma { margin: 0; font: 400 .8125rem/1.5 var(--f-ui); color: var(--texto-2); border-top: 1px solid var(--borde); padding-top: 1rem; }
+
+@media (prefers-reduced-motion: reduce) { .ba .per { transition: none; } html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<main class="pagina">
+  <header class="col cabecera">
+    <p class="meta">Reverso · Finca Viña Grande, Ciempozuelos · Borrador para validar, 23-11-2026</p>
+    <h1>Así quedará la finca Viña Grande</h1>
+    <p class="entrada">Son fotos reales del terreno y la ortofoto oficial del IGN. En cada «después» solo cambia el suelo de la antigua gravera: el hueco se rellena hasta la cota de la vía del tren, se nivela y vuelve a ser tierra de cultivo, como las parcelas de la vega que la rodean. Desliza sobre cada imagen para comparar.</p>
+  </header>
+
+  <section class="col" aria-label="Datos del proyecto">
+    <dl class="cifras">
+      <div><dt>Superficie</dt><dd>32,5 ha<small>324.831 m² en nueve parcelas del polígono 9</small></dd></div>
+      <div><dt>Relleno</dt><dd>1.970.802 m³<small>de tierras y materiales inertes</small></dd></div>
+      <div><dt>Hueco actual</dt><dd>8–15 m<small>bajo la cota original en la zona central y norte</small></dd></div>
+      <div><dt>Uso final</dt><dd>Agrícola<small>sin arbolado nuevo, por estar en el BIC Salinas de Espartinas</small></dd></div>
+    </dl>
+    <p class="fuente">Fuente: Proyecto de control arqueológico INF/0218/2023 (GEA Arqueólogos, julio de 2026) y estudio topográfico de la explotación (septiembre de 2023).</p>
+  </section>
+
+  <section class="vista" aria-labelledby="t-aerea">
+    <div class="col vista-cab">
+      <h2 id="t-aerea">La finca desde el aire</h2>
+      <p>Arriba, la vía del tren; abajo, la M-307. Toda la franja entre las dos se rellena y queda dividida en parcelas de cultivo con sus caminos. La hilera de árboles de la cacera de riego se conserva.</p>
+    </div>
+    <figure class="ba ancho" id="ba-aerea" style="width:100%">
+      <img src="img/aerea-antes.jpg" alt="Ortofoto de 2023: antigua gravera con planta de machaqueo, acopios, una charca y matorral entre la vía del tren y la M-307" width="2400" height="1350">
+      <div class="despues"><img src="img/aerea-despues.jpg" alt="La misma vista con la franja rellena y dividida en seis parcelas de cultivo, verdes y labradas, separadas por caminos" width="2400" height="1350"></div>
+      <svg class="per" viewBox="0 0 6000 3375" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><polygon points="5518,1894 5192,1509 5187,1489 5217,1397 5242,1340 5287,1270 5261,1263 5219,1245 5066,1228 4925,1218 4838,1214 4832,1202 4836,1199 4835,1196 4814,1198 3501,1244 3424,1252 2701,1276 1683,1318 1675,1493 1662,1498 1471,1478 1423,1472 1261,1443 1249,1450 1199,1493 1162,1509 1089,1586 1103,1620 1110,1649 1136,1656 1171,1672 1205,1704 1226,1739 1237,1769 1257,1807 1280,1841 1303,1862 1346,1891 1418,1916 1639,1980 1949,2049 2297,2132 2779,2240 3167,2322 3347,2348 3437,2351 3609,2340 4662,2219 4897,2190 4919,2141"/></svg>
+      <div class="raya" aria-hidden="true"></div>
+      <div class="tirador" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l-5 6 5 6M15 6l5 6-5 6"/></svg></div>
+      <span class="chip izq" aria-hidden="true">Hoy</span>
+      <span class="chip der" aria-hidden="true">Restaurada</span>
+      <input type="range" min="0" max="100" value="50" step="0.5" aria-label="Comparar la vista aérea de hoy con la finca restaurada">
+    </figure>
+    <div class="col mandos">
+      <div class="segmento" role="group" aria-label="Vista aérea">
+        <button type="button" data-a="0">Restaurada</button>
+        <button type="button" data-a="50" aria-pressed="true">Comparar</button>
+        <button type="button" data-a="100">Hoy</button>
+      </div>
+      <label class="conmutador"><input type="checkbox" id="ver-perimetro"><span>Ver el perímetro del relleno</span></label>
+    </div>
+    <p class="col pie-foto">Ortofoto PNOA 2023 (IGN), girada para que la finca quede en horizontal: el norte queda a la derecha. Escala aproximada: el ancho de la imagen son 1,8 km. Fuera del perímetro del relleno la imagen es la original.</p>
+  </section>
+
+  <section class="vista" aria-labelledby="t-via">
+    <div class="col vista-cab">
+      <h2 id="t-via">Desde la finca, mirando a la vía</h2>
+      <p>Al fondo, la vía y los cerros de yeso. El corte de la gravera, la explanada y las casetas desaparecen: el terreno sube hasta la cota de la vía y queda una sola parcela llana, sembrada.</p>
+    </div>
+    <figure class="ba ancho" id="ba-via" style="width:100%">
+      <img src="img/via-antes.jpg" alt="Foto de la visita: matorral en primer plano, explanada de grava, casetas y el talud de la antigua extracción delante de la vía y los cerros" width="2400" height="1349">
+      <div class="despues"><img src="img/via-despues.jpg" alt="La misma foto con el terreno nivelado hasta la vía y convertido en un campo de cereal joven" width="2400" height="1349"></div>
+      <div class="raya" aria-hidden="true"></div>
+      <div class="tirador" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l-5 6 5 6M15 6l5 6-5 6"/></svg></div>
+      <span class="chip izq" aria-hidden="true">Hoy</span>
+      <span class="chip der" aria-hidden="true">Restaurada</span>
+      <input type="range" min="0" max="100" value="50" step="0.5" aria-label="Comparar la vista hacia la vía hoy y restaurada">
+    </figure>
+    <div class="col mandos">
+      <div class="segmento" role="group" aria-label="Vista hacia la vía">
+        <button type="button" data-a="0">Restaurada</button>
+        <button type="button" data-a="50" aria-pressed="true">Comparar</button>
+        <button type="button" data-a="100">Hoy</button>
+      </div>
+    </div>
+    <p class="col pie-foto">Foto de la visita del 14-10-2026. El cielo, los cerros y la vía son los píxeles originales de la cámara.</p>
+  </section>
+
+  <section class="vista" aria-labelledby="t-vega">
+    <div class="col vista-cab">
+      <h2 id="t-vega">Hacia la vega del Jarama</h2>
+      <p>Mirando al este, sobre el fondo del hueco. Los caminos de la explotación y el matorral dejan paso a un campo de cereal a la altura de las parcelas de la vega.</p>
+    </div>
+    <figure class="ba ancho" id="ba-vega" style="width:100%">
+      <img src="img/vega-antes.jpg" alt="Foto de la visita: fondo de la gravera con matorral disperso, caminos de tierra y la arboleda de la vega al fondo" width="2400" height="1349">
+      <div class="despues"><img src="img/vega-despues.jpg" alt="La misma foto con el terreno nivelado y sembrado de cereal hasta la arboleda" width="2400" height="1349"></div>
+      <div class="raya" aria-hidden="true"></div>
+      <div class="tirador" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l-5 6 5 6M15 6l5 6-5 6"/></svg></div>
+      <span class="chip izq" aria-hidden="true">Hoy</span>
+      <span class="chip der" aria-hidden="true">Restaurada</span>
+      <input type="range" min="0" max="100" value="50" step="0.5" aria-label="Comparar la vista hacia la vega hoy y restaurada">
+    </figure>
+    <div class="col mandos">
+      <div class="segmento" role="group" aria-label="Vista hacia la vega">
+        <button type="button" data-a="0">Restaurada</button>
+        <button type="button" data-a="50" aria-pressed="true">Comparar</button>
+        <button type="button" data-a="100">Hoy</button>
+      </div>
+    </div>
+    <p class="col pie-foto">Foto de la visita del 14-10-2026. El cielo, el horizonte y la arboleda son los píxeles originales de la cámara.</p>
+  </section>
+
+  <section class="col bloque" aria-labelledby="t-como">
+    <h2 id="t-como">Cómo están hechas</h2>
+    <p>Cada pareja parte de una imagen real: la ortofoto PNOA de 2023 o las fotos que tomamos en la visita. El «después» es esa misma imagen, en la que solo se ha cambiado el terreno de la gravera.</p>
+    <p>En la vista aérea, la zona cambiada coincide con el perímetro del relleno del estudio topográfico, y fuera de él no se ha tocado nada. En las fotos se conservan los píxeles originales del cielo, los cerros, la vía y la arboleda. El cereal que se ve es orientativo.</p>
+  </section>
+
+  <section class="col bloque" aria-labelledby="t-validar">
+    <h2 id="t-validar">Qué necesito que valides</h2>
+    <ol>
+      <li>Si el acabado agrícola es el que queréis enseñar, o si preferís otro cultivo o la tierra solo labrada.</li>
+      <li>Si la cota de la vía es la referencia correcta en toda la finca.</li>
+      <li>Si hacen falta más puntos de vista, por ejemplo desde la M-307 o desde la entrada.</li>
+    </ol>
+    <p>Con el visto bueno sigo con el terreno en 3D a partir de los datos LiDAR del IGN, para enseñar la profundidad real del hueco y cómo se rellena por fases. Con esas piezas montaré el dosier final para la administración.</p>
+  </section>
+
+  <p class="col firma">Recuperaciones y Vertidos Soto, S.L. · Grupo Soto. Imágenes de trabajo; no sustituyen a los planos del proyecto.</p>
+</main>
+
+<script>
+document.querySelectorAll('.ba').forEach(function (fig) {
+  var rango = fig.querySelector('input[type="range"]');
+  var botones = fig.parentElement.querySelectorAll('.segmento button');
+  function poner(v) {
+    fig.style.setProperty('--pos', v + '%');
+    rango.value = v;
+    botones.forEach(function (b) { b.setAttribute('aria-pressed', String(Number(b.dataset.a) === Number(v))); });
+  }
+  rango.addEventListener('input', function () { poner(rango.value); });
+  botones.forEach(function (b) { b.addEventListener('click', function () { poner(Number(b.dataset.a)); }); });
+});
+var per = document.getElementById('ver-perimetro');
+per.addEventListener('change', function () { document.getElementById('ba-aerea').classList.toggle('con-perimetro', per.checked); });
+</script>
+</body>
+</html>
