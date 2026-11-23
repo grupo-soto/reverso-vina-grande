@@ -280,7 +280,85 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   .cambios button:hover { transform: none; }
 }
 
+/* ===== 01 · En su sitio: mapa que baja de la Comunidad a la finca ===== */
+.sitio { display: grid; gap: 14px; align-content: center; }
+.sitio__mapa {
+  position: relative; overflow: hidden; border-radius: 26px; aspect-ratio: 1 / 1; width: 100%;
+  background: #F1EEE5; box-shadow: 0 30px 60px -44px rgba(34, 47, 30, .6);
+}
+.sitio__mapa svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.sitio__capas {
+  position: absolute; left: 10px; bottom: 10px; z-index: 3; display: flex; flex-wrap: wrap; gap: 4px; max-width: calc(100% - 20px);
+}
+.sitio__capas label {
+  display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px 6px 8px; border-radius: 999px; cursor: pointer;
+  background: rgba(255, 255, 255, .9); font-size: .74rem; font-weight: 620; color: var(--tinta); box-shadow: 0 6px 16px -10px rgba(34, 47, 30, .6);
+}
+.sitio__capas input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.sitio__capas label:has(input:not(:checked)) { color: var(--suave); background: rgba(255, 255, 255, .6); }
+.sitio__capas label:has(input:not(:checked)) .muestra { opacity: .25; }
+.sitio__capas label:has(input:focus-visible) { outline: 2.5px solid var(--re); outline-offset: 2px; }
+.muestra { width: 14px; height: 10px; border-radius: 3px; flex: none; }
+.m-parque { background: rgba(176, 208, 122, .75); box-shadow: inset 0 0 0 1.5px #5E8A3A; }
+.m-zec { background: repeating-linear-gradient(45deg, #325220 0 1.5px, transparent 1.5px 4px); box-shadow: inset 0 0 0 1.5px #325220; }
+.m-zepa { background: rgba(155, 107, 71, .14); box-shadow: inset 0 0 0 1.5px #9B6B47; }
+.m-rios { height: 3px; border-radius: 3px; background: #5F93BC; }
+.sitio__pasos { list-style: none; margin: 0; padding: 0; display: grid; }
+.sitio__paso {
+  grid-area: 1 / 1; display: grid; gap: 6px; align-content: start; padding: 16px 16px 14px; border-radius: var(--radio);
+  background: rgba(255, 255, 255, .78); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .85), 0 18px 40px -26px rgba(64, 44, 26, .55);
+  opacity: 0; visibility: hidden; transform: translateY(10px); transition: opacity .45s var(--ease), transform .45s var(--ease), visibility .45s;
+}
+.sitio__paso.activo { opacity: 1; visibility: visible; transform: none; }
+.sitio__paso .cifra { font-size: 2.1rem; line-height: 1; color: var(--re); }
+.sitio__paso b { font-weight: 740; font-stretch: 88%; font-size: 1.2rem; letter-spacing: -.015em; line-height: 1.12; }
+.sitio__texto { color: var(--suave); font-size: .95rem; line-height: 1.45; }
+.sitio__paso small { font-size: .74rem; color: var(--suave); opacity: .85; }
+/* sin JS o sin movimiento: todos los pasos, uno debajo de otro */
+.sitio.quieto .sitio__pasos { gap: 8px; }
+.sitio.quieto .sitio__paso { grid-area: auto; opacity: 1; visibility: visible; transform: none; }
+@media (min-width: 900px) {
+  .sitio { grid-template-columns: 1fr 340px; column-gap: 28px; align-items: center; min-height: 100svh; padding: 48px 0; }
+  .sitio__mapa { aspect-ratio: 16 / 10; max-height: calc(100svh - 96px); }
+  .sitio__paso { padding: 22px 22px 18px; }
+  .sitio__paso .cifra { font-size: 2.8rem; }
+}
+@media (max-width: 899px) {
+  .sitio { min-height: 100svh; padding: 56px 0 16px; }
+  .sitio__mapa { aspect-ratio: 1 / 1; max-height: 58svh; }
+  .sitio__texto { font-size: .9rem; }
+}
+/* el mapa */
+#mapa .comunidad { fill: #FFFFFF; fill-opacity: .7; stroke: #222F1E; stroke-opacity: .55; stroke-width: 1.2; }
+#mapa .parque { fill: #B0D07A; fill-opacity: .55; stroke: #5E8A3A; stroke-width: 1.4; }
+#mapa .zec { fill: url(#rayado); stroke: #325220; stroke-width: 1.5; stroke-dasharray: 7 4; }
+#mapa .zepa { fill: #9B6B47; fill-opacity: .1; stroke: #9B6B47; stroke-width: 1.6; stroke-dasharray: 1.5 4; stroke-linecap: round; }
+#mapa .muni { fill: none; stroke: #222F1E; stroke-opacity: .45; stroke-width: 1; stroke-dasharray: 5 4; }
+#mapa .rio { fill: none; stroke: #5F93BC; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+#mapa .rio.jarama { stroke-width: 2.6; }
+#mapa .via { fill: none; stroke: #222F1E; stroke-width: 2.4; }
+#mapa .via-blanca { fill: none; stroke: #fff; stroke-width: 1.2; stroke-dasharray: 6 6; }
+#mapa .carretera-borde { fill: none; stroke: #8C8A80; stroke-width: 5; stroke-linecap: round; }
+#mapa .carretera { fill: none; stroke: #FFFFFF; stroke-width: 3.4; stroke-linecap: round; }
+#mapa .finca { fill: #47782C; fill-opacity: .9; stroke: #fff; stroke-width: 2; }
+#mapa .frente { stroke: #fff; stroke-width: 3; vector-effect: non-scaling-stroke; filter: drop-shadow(0 0 3px rgba(34, 47, 30, .45)); }
+#mapa .linea, #mapa .comunidad, #mapa .parque, #mapa .zec, #mapa .zepa, #mapa .muni, #mapa .rio, #mapa .via, #mapa .via-blanca, #mapa .carretera, #mapa .carretera-borde, #mapa .finca { vector-effect: non-scaling-stroke; }
+#mapa.sin-parque .c-parque, #mapa.sin-zec .c-zec, #mapa.sin-zepa .c-zepa, #mapa.sin-rios .c-rios { display: none; }
+#mapa .etq text { font-family: 'Archivo', system-ui, sans-serif; paint-order: stroke; stroke: #F8F7F2; stroke-width: 3.5px; stroke-linejoin: round; fill: #222F1E; }
+#mapa .etq .nucleo { font-size: 12px; font-weight: 650; }
+#mapa .etq .rotulo { font-size: 11px; font-weight: 600; font-style: italic; fill: #3F6E92; }
+#mapa .etq .rotulo.negro { fill: #222F1E; font-style: normal; }
+#mapa .etq .grande { font-size: 11px; font-weight: 650; letter-spacing: .12em; text-transform: uppercase; fill: rgba(34, 47, 30, .6); }
+#mapa .punto { fill: #222F1E; }
+#mapa .marca circle.centro { fill: #47782C; stroke: #fff; stroke-width: 2.5; }
+#mapa .marca circle.onda { fill: none; stroke: #47782C; stroke-width: 2; transform-box: fill-box; transform-origin: center; animation: onda 2s var(--ease) infinite; }
+#mapa .marca rect { fill: #fff; }
+#mapa .marca text { font-family: 'Archivo', system-ui, sans-serif; font-size: 12px; font-weight: 700; fill: #222F1E; }
+@keyframes onda { from { transform: scale(.6); opacity: .9; } to { transform: scale(2.4); opacity: 0; } }
+
 @media (prefers-reduced-motion: reduce) {
+  #mapa .marca circle.onda { animation: none; opacity: 0; }
+  .sitio__paso { transition: none; }
   .ba .per, .par img, .punto, .cambios button, .paso { transition: none; }
   .punto.activo::after { animation: none; }
 }
@@ -313,10 +391,39 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
     <p class="fuente">Fuente: Proyecto de control arqueológico INF/0218/2023 (GEA Arqueólogos, julio de 2026) y estudio topográfico de la explotación (septiembre de 2023).</p>
   </section>
 
-  <!-- 01 · Desde el aire -->
+  <!-- 01 · En su sitio -->
+  <section class="seccion caja" aria-labelledby="t-sitio">
+    <div class="cabeza">
+      <p class="cabeza__num etiqueta"><span>01</span> En su sitio</p>
+      <h2 class="titular cabeza__titular" id="t-sitio" data-entra>Dónde está la finca</h2>
+      <p class="cabeza__entrada">Baja despacio: el mapa va de la Comunidad de Madrid a la finca y enseña los espacios protegidos que la rodean, con sus límites oficiales.</p>
+    </div>
+    <div class="sitio" id="sitio">
+      <figure class="sitio__mapa">
+        <svg id="mapa" viewBox="-25792 -39212 75955 68660" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Mapa: la finca al sur de la Comunidad de Madrid, junto al Jarama, dentro del Parque Regional del Sureste y de la ZEC y la ZEPA de la Red Natura 2000"></svg>
+        <div class="sitio__capas" role="group" aria-label="Capas del mapa">
+          <label><input type="checkbox" data-capa="parque" checked><i class="muestra m-parque"></i>Parque Regional</label>
+          <label><input type="checkbox" data-capa="zec" checked><i class="muestra m-zec"></i>ZEC</label>
+          <label><input type="checkbox" data-capa="zepa" checked><i class="muestra m-zepa"></i>ZEPA</label>
+          <label><input type="checkbox" data-capa="rios" checked><i class="muestra m-rios"></i>Ríos</label>
+        </div>
+      </figure>
+      <ol class="sitio__pasos">
+        <li class="sitio__paso activo" data-vista="comunidad"><span class="cifra">33,4 km</span><b>Al sur de Madrid</b><span class="sitio__texto">A 33,4 km de la Puerta del Sol en línea recta, en el término municipal de Ciempozuelos, junto a la vega del Jarama.</span></li>
+        <li class="sitio__paso" data-vista="parque"><span class="cifra">100 %</span><b>Dentro del Parque Regional del Sureste</b><span class="sitio__texto">El Parque Regional en torno a los ejes de los cursos bajos de los ríos Manzanares y Jarama, de 31.472 ha. La finca queda entera dentro, en la zona D3, de explotación ordenada de los recursos naturales.</span><small>Límite: MITECO, 2025. Zona D3: proyecto, pág. 6.</small></li>
+        <li class="sitio__paso" data-vista="natura"><span class="cifra">Red Natura 2000</span><b>En una ZEC y una ZEPA</b><span class="sitio__texto">ZEC ES3110006 «Vegas, cuestas y páramos del Sureste de Madrid» y ZEPA ES0000142 «Cortados y cantiles de los ríos Jarama y Manzanares». La finca queda entera dentro de las dos.</span><small>Límites: MITECO, Red Natura 2000, 2025.</small></li>
+        <li class="sitio__paso" data-vista="entorno"><span class="cifra">1,2 km</span><b>Entre la vía y la M-307</b><span class="sitio__texto">A 1,2 km del Jarama y a 3,9 km del centro de Ciempozuelos. La línea de tren Madrid–Valencia pasa pegada a la finca. La parcela está en el ámbito de la Zona Arqueológica de Las Salinas Espartinas, Bien de Interés Cultural desde 2006.</span><small>BIC: Decreto 45/2006 y proyecto, págs. 8 y 22. Su límite no es público, así que no se dibuja.</small></li>
+        <li class="sitio__paso" data-vista="finca"><span class="cifra">32,5 ha</span><b>Hoy, la antigua gravera</b><span class="sitio__texto">Huecos de extracción que en las zonas más explotadas llegan a unos 15 m por debajo del terreno original. Sigue bajando para verla llena.</span><small>Proyecto, pág. 17. Ortofoto PNOA 2023, girada como la del capítulo siguiente.</small></li>
+        <li class="sitio__paso" data-vista="restaurada"><span class="cifra">1,97 mill. m³</span><b>Llena, a la cota original</b><span class="sitio__texto">El hueco se rellena hasta la cota que tenía el terreno antes de la extracción y la finca queda lista para volver al uso agrícola. Las parcelas que se ven son orientativas.</span><small>Volumen: estudio topográfico (proyecto, pág. 17).</small></li>
+      </ol>
+    </div>
+    <p class="pie">Distancias en línea recta. Espacios protegidos: Banco de Datos de la Naturaleza del Ministerio para la Transición Ecológica (diciembre de 2025). Límites municipales, ríos, vía y carreteras: OpenStreetMap. Perímetro de la finca: plano n.º 3 del estudio topográfico. Ortofoto: PNOA 2023 (IGN).</p>
+  </section>
+
+  <!-- 02 · Desde el aire -->
   <section class="seccion caja" aria-labelledby="t-aire">
     <div class="cabeza">
-      <p class="cabeza__num etiqueta"><span>01</span> Desde el aire</p>
+      <p class="cabeza__num etiqueta"><span>02</span> Desde el aire</p>
       <h2 class="titular cabeza__titular" id="t-aire" data-entra>La gravera vuelve a ser <span class="giro" data-giro><span class="giro__cara">vega</span><span class="giro__cara giro__cara--verde" aria-hidden="true">vega</span></span></h2>
     </div>
 
@@ -364,7 +471,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   <!-- 02 · El hueco -->
   <section class="seccion caja" aria-labelledby="t-hueco">
     <div class="cabeza">
-      <p class="cabeza__num etiqueta"><span>02</span> El hueco</p>
+      <p class="cabeza__num etiqueta"><span>03</span> El hueco</p>
       <h2 class="titular cabeza__titular" id="t-hueco">Lo que no se ve desde arriba</h2>
       <p class="cabeza__entrada">Maqueta del terreno real cortada por la parte más honda de la finca. Hoy, la cara del corte enseña el hueco de la gravera en las capas de limos, arenas y gravas. Restaurada, el hueco queda ocupado por el relleno, con la tierra vegetal y los cultivos encima.</p>
     </div>
@@ -426,7 +533,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   <!-- 03 · En 3D -->
   <section class="seccion caja" aria-labelledby="t-3d">
     <div class="cabeza">
-      <p class="cabeza__num etiqueta"><span>03</span> En 3D</p>
+      <p class="cabeza__num etiqueta"><span>04</span> En 3D</p>
       <h2 class="titular cabeza__titular" id="t-3d">Como desde un dron</h2>
       <p class="cabeza__entrada">El terreno real en 3D, a escala, con la ortofoto encima. Restaurada, la franja entre la vía y la M-307 se lee como una parcela más de la vega.</p>
     </div>
@@ -513,7 +620,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   <!-- 04 · A pie de finca -->
   <section class="seccion caja" aria-labelledby="t-pie">
     <div class="cabeza">
-      <p class="cabeza__num etiqueta"><span>04</span> A pie de finca</p>
+      <p class="cabeza__num etiqueta"><span>05</span> A pie de finca</p>
       <h2 class="titular cabeza__titular" id="t-pie">Las fotos de la visita</h2>
       <p class="cabeza__entrada">Fotos tomadas en la finca el 14 de octubre. En cada «después» solo cambia el suelo de la gravera: el cielo, los cerros, la vía y la arboleda son los píxeles originales de la cámara.</p>
     </div>
@@ -627,7 +734,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   <!-- 05 · Cierre perimetral (aparte) -->
   <section class="seccion caja" aria-labelledby="t-cierre">
     <div class="cabeza">
-      <p class="cabeza__num etiqueta"><span>05</span> Aparte · Cierre perimetral</p>
+      <p class="cabeza__num etiqueta"><span>06</span> Aparte · Cierre perimetral</p>
       <h2 class="titular cabeza__titular" id="t-cierre">La finca, cerrada mientras se rellena</h2>
       <p class="cabeza__entrada">Un murete de hormigón con malla metálica encima rodea la finca, con una puerta corredera en la entrada de camiones de la M-307.</p>
     </div>
@@ -741,6 +848,8 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 
 <script src="js/gsap.min.js"></script>
 <script src="js/ScrollTrigger.min.js"></script>
+<script src="js/mapa-datos.js"></script>
+<script src="js/mapa.js"></script>
 <script src="js/finca.js"></script>
 </body>
 </html>
