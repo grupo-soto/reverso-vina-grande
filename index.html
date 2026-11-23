@@ -138,9 +138,25 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 .rot.izq span { left: auto; right: 14px; }
 @media (max-width: 600px) {
   .rot small { display: none; }
-  .rot.izq span { left: 14px; right: auto; }
+  .rot::before { left: -4.5px; top: -4.5px; width: 9px; height: 9px; box-shadow: 0 0 0 2px #fff, 0 3px 8px -3px rgba(34, 47, 30, .7); }
+  .rot span { left: 9px; padding: 3px 6px; border-radius: 7px; font-size: .58rem; font-weight: 640; }
+  .rot.izq span { left: 9px; right: auto; }
   .chip { bottom: 10px; padding: 5px 9px; }
 }
+/* rótulos que se pueden ocultar (botón en cada imagen; vale para toda la página) */
+.rotulos { transition: opacity .35s var(--ease), visibility .35s; }
+.sin-rotulos .rotulos { opacity: 0; visibility: hidden; }
+.ver-rotulos {
+  position: absolute; top: 10px; left: 10px; z-index: 6; height: 32px; padding: 0 11px 0 9px; border-radius: 999px;
+  display: inline-flex; align-items: center; gap: 6px; background: rgba(248, 247, 242, .92); color: var(--tinta);
+  font-weight: 650; font-size: .72rem; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .8), 0 8px 20px -14px rgba(34, 47, 30, .6);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+}
+.ver-rotulos svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.ver-rotulos .ojo-no, .ver-rotulos[aria-pressed="false"] .ojo { display: none; }
+.ver-rotulos[aria-pressed="false"] .ojo-no { display: block; }
+.ver-rotulos[aria-pressed="false"] { color: var(--suave); }
+@media (max-width: 600px) { .ver-rotulos { top: 8px; left: 8px; height: 28px; padding: 0 9px 0 7px; font-size: .66rem; } }
 
 .mandos { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
 .segmento { display: inline-flex; gap: 4px; padding: 4px; border-radius: 999px; background: rgba(255, 255, 255, .7); box-shadow: inset 0 0 0 1px var(--linea); }
@@ -774,7 +790,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
             <div class="rotulos" aria-hidden="true">
               <i class="rot" style="--x:55%;--y:64%"><span>Poste de acero<small>cada 3 m</small></span></i>
               <i class="rot izq" style="--x:24%;--y:74%"><span>Malla de simple torsión<small>hasta 2,00 m</small></span></i>
-              <i class="rot" style="--x:66%;--y:83%"><span>Murete de hormigón<small>0,80 m</small></span></i>
+              <i class="rot" style="--x:25%;--y:92%"><span>Murete de hormigón<small>0,80 m</small></span></i>
             </div>
           </div>
         </div>

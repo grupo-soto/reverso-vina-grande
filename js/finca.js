@@ -74,6 +74,33 @@
   const abrir = (fig) => gsap.fromTo(fig, { clipPath: CERRADO }, { clipPath: ABIERTO, duration: 1.1, ease: 'power3.out', clearProps: 'clipPath' });
   const asomar = (els) => gsap.fromTo(els, { scale: 0, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 0.55, ease: 'back.out(2.2)', stagger: 0.08, clearProps: 'opacity,visibility' });
 
+  /* ---------- 0. rótulos que se pueden ocultar: un botón en cada imagen con rótulos, para toda la página ---------- */
+  const conRotulos = $$('figure').filter((f) => $('.rot', f));
+  if (conRotulos.length) {
+    let ocultos = false;
+    try { ocultos = localStorage.getItem('finca-sin-rotulos') === '1'; } catch (e) { /* sin almacenamiento */ }
+    const ojos = conRotulos.map((f) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'ver-rotulos';
+      b.innerHTML = '<svg class="ojo" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>'
+        + '<svg class="ojo-no" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18M10.6 5.1A10 10 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3 3.8M6.6 6.6C3.8 8.4 2 12 2 12s3.6 7 10 7a9.7 9.7 0 0 0 4.4-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>'
+        + '<span>Rótulos</span>';
+      f.appendChild(b);
+      return b;
+    });
+    const aplicar = () => {
+      document.body.classList.toggle('sin-rotulos', ocultos);
+      ojos.forEach((b) => { b.setAttribute('aria-pressed', String(!ocultos)); b.setAttribute('aria-label', ocultos ? 'Mostrar los rótulos' : 'Ocultar los rótulos'); });
+    };
+    ojos.forEach((b) => b.addEventListener('click', (e) => {
+      e.stopPropagation();
+      ocultos = !ocultos;
+      try { localStorage.setItem('finca-sin-rotulos', ocultos ? '1' : '0'); } catch (err) { /* sin almacenamiento */ }
+      aplicar();
+    }));
+    aplicar();
+  }
+
   /* ---------- 1. comparadores con deslizador (.ba) ---------- */
   $$('.ba').forEach((fig) => {
     const rango = $('input[type="range"]', fig);
