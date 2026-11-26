@@ -1,0 +1,2 @@
+/* Generado por pistachos/propuesta_datos.py: px del encuadre de aerea/ (0,3 m/px). */
+window.PROPUESTA = {"pistachar": "M5286,1270L5219,1245L5065,1227L4839,1215L4832,1202L4834,1195L3501,1244L3422,1253L2921,1268L2921,1698L4996,1698L5247,1574L5192,1508L5186,1488L5238,1346Z", "caminos": "M3686,1238V1698M4469,1210V1698M2921,1712L4995,1712L5655,1384", "puntos": {"pistachar": [4250, 1470], "cereal": [2350, 1700], "cacera": [4000, 2137], "entrada": [1113, 1634]}, "ha": 9.6};

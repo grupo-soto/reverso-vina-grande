@@ -101,7 +101,8 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   user-select: none; -webkit-user-select: none;
 }
 .ba img, .par img, .fijo img, .fijo video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
-.ba .despues { position: absolute; inset: 0; clip-path: inset(0 0 0 var(--pos)); }
+.ba .despues { position: absolute; inset: 0; z-index: 2; clip-path: inset(0 0 0 var(--pos)); }   /* tapa los rótulos de «hoy» */
+.ba > .despues ~ .rotulos { z-index: 3; }
 .ba .per { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0; transition: opacity .3s var(--ease); z-index: 2; }
 .ba .per polygon { fill: rgba(176, 208, 122, .18); stroke: #fff; stroke-width: 8; stroke-dasharray: 30 16; stroke-linejoin: round; }
 .ba.con-perimetro .per { opacity: 1; }
@@ -301,54 +302,151 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   .cambios button:hover { transform: none; }
 }
 
-/* ===== 01 · En su sitio: mapa que baja de la Comunidad a la finca ===== */
-.sitio { display: grid; gap: 14px; align-content: center; }
-.sitio__mapa {
-  position: relative; overflow: hidden; border-radius: 26px; aspect-ratio: 1 / 1; width: 100%;
-  background: #F1EEE5; box-shadow: 0 30px 60px -44px rgba(34, 47, 30, .6);
+/* ===== 01 · En su sitio: hoja de proyecto a pantalla completa =====
+   El mapa ocupa toda la pantalla como un plano: cuadrícula UTM real, marco con coordenadas, índice de hojas y cajetín
+   con escala gráfica, norte y coordenadas que cambian con el zoom. La última hoja dibuja la propuesta. */
+.plano {
+  --tinta-plano: #1F2A1B; --papel-plano: #F3F0E6; --linea-plano: rgba(31, 42, 27, .16);
+  position: relative; height: 100svh; min-height: 560px; overflow: hidden; isolation: isolate;
+  margin-top: clamp(64px, 11vw, 112px); background: var(--papel-plano); color: var(--tinta-plano);
 }
-.sitio__mapa svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-.sitio__capas {
-  position: absolute; left: 10px; bottom: 10px; z-index: 3; display: flex; flex-wrap: wrap; gap: 4px; max-width: calc(100% - 20px);
+.plano #mapa, .plano__reticula { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.plano__reticula { pointer-events: none; z-index: 2; }
+.plano__marco { position: absolute; inset: 14px; z-index: 3; pointer-events: none; border: 1.5px solid var(--tinta-plano); }
+.plano__marco::after { content: ""; position: absolute; inset: 5px; border: .5px solid var(--tinta-plano); opacity: .6; }
+.plano.foto .plano__marco, .plano.foto .plano__marco::after { border-color: rgba(255, 255, 255, .85); }
+.plano__reticula text { font-family: 'Archivo', system-ui, sans-serif; font-size: 10px; font-weight: 560; font-stretch: 88%; letter-spacing: .04em; fill: var(--tinta-plano); font-variant-numeric: tabular-nums; }
+.plano__reticula line { stroke: var(--tinta-plano); stroke-width: 1; }
+.plano.foto .plano__reticula text { fill: #fff; }
+.plano.foto .plano__reticula line { stroke: #fff; }
+
+/* cajetín con la identidad de Reverso: una tarjeta de papel con cristal y, a la izquierda, el corte del terreno.
+   Cada hoja es una tongada (de la tierra del fondo, 01, a la tierra vegetal y el cultivo, 07): se llenan al bajar,
+   se pueden pulsar para ir a esa hoja y en la última brota la hierba encima. */
+.plano__cajetin {
+  position: absolute; right: 30px; bottom: 30px; z-index: 5; width: 440px; display: grid; grid-template-columns: 70px 1fr;
+  border-radius: 26px; overflow: hidden; color: var(--tinta);
+  background: rgba(248, 247, 242, .9); -webkit-backdrop-filter: blur(16px) saturate(1.2); backdrop-filter: blur(16px) saturate(1.2);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .85), 0 30px 60px -34px rgba(31, 42, 27, .65);
 }
-.sitio__capas label {
-  display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px 6px 8px; border-radius: 999px; cursor: pointer;
-  background: rgba(255, 255, 255, .9); font-size: .74rem; font-weight: 620; color: var(--tinta); box-shadow: 0 6px 16px -10px rgba(34, 47, 30, .6);
+.corte-hojas { position: relative; display: flex; flex-direction: column; justify-content: flex-end; padding-top: 26px; background: #EFE7D9; }
+.corte-hojas__hierba { position: absolute; left: 0; right: 0; top: 8px; width: 100%; height: 22px; fill: #6FA44E; transform-origin: 50% 100%; transform: scaleY(0); transition: transform 1.2s var(--ease); }
+.plano.brota .corte-hojas__hierba { transform: none; }
+.corte-hojas__lista { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column-reverse; flex: 1; }
+.corte-hojas__lista li { position: relative; flex: 1; min-height: 30px; margin-bottom: -7px; }
+.corte-hojas__lista li:first-child { margin-bottom: 0; }
+.corte-hojas__lista li:nth-child(1) { z-index: 1; } .corte-hojas__lista li:nth-child(2) { z-index: 2; } .corte-hojas__lista li:nth-child(3) { z-index: 3; }
+.corte-hojas__lista li:nth-child(4) { z-index: 4; } .corte-hojas__lista li:nth-child(5) { z-index: 5; } .corte-hojas__lista li:nth-child(6) { z-index: 6; } .corte-hojas__lista li:nth-child(7) { z-index: 7; }
+.estrato {
+  position: relative; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; padding: 6px 0 0;
+  background: color-mix(in srgb, var(--c) 22%, #F4ECDF); color: rgba(34, 47, 30, .45); cursor: pointer;
+  transition: background-color .6s var(--ease), color .4s;
+  -webkit-mask: linear-gradient(#000 0 0) bottom / 100% calc(100% - 7px) no-repeat, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='35' height='8'%3E%3Cpath d='M0 8V4Q9 -1 17.5 4T35 4V8Z'/%3E%3C/svg%3E") top / 35px 8px repeat-x;
+  mask: linear-gradient(#000 0 0) bottom / 100% calc(100% - 7px) no-repeat, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='35' height='8'%3E%3Cpath d='M0 8V4Q9 -1 17.5 4T35 4V8Z'/%3E%3C/svg%3E") top / 35px 8px repeat-x;
 }
-.sitio__capas input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-.sitio__capas label:has(input:not(:checked)) { color: var(--suave); background: rgba(255, 255, 255, .6); }
-.sitio__capas label:has(input:not(:checked)) .muestra { opacity: .25; }
-.sitio__capas label:has(input:focus-visible) { outline: 2.5px solid var(--re); outline-offset: 2px; }
+.estrato::after { /* granos de la tongada */
+  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .55;
+  background: radial-gradient(circle at 20% 60%, rgba(0, 0, 0, .09) 0 1.6px, transparent 2px) 0 0 / 14px 11px, radial-gradient(circle at 70% 30%, rgba(255, 255, 255, .35) 0 1.2px, transparent 1.6px) 0 0 / 17px 13px;
+}
+.estrato.hecho, .estrato.actual { background: var(--c); color: rgba(34, 47, 30, .78); }
+.estrato.actual { color: #fff; }
+.estrato.actual .estrato__n { font-weight: 560; }
+.estrato:nth-child(n) .estrato__n { position: relative; z-index: 1; font-size: 1rem; line-height: 1; }
+.estrato__nombre {
+  position: absolute; left: calc(100% + 10px); top: 50%; z-index: 10; translate: -6px -40%; white-space: nowrap; pointer-events: none;
+  padding: 6px 10px; border-radius: 999px; background: var(--tinta); color: #fff; opacity: 0; transition: opacity .25s, translate .3s var(--ease);
+  font-weight: 650; font-stretch: 112%; text-transform: uppercase; letter-spacing: .08em; font-size: .62rem;
+}
+.estrato:hover .estrato__nombre, .estrato:focus-visible .estrato__nombre { opacity: 1; translate: 0 -40%; }
+.estrato:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--tinta); }
+.cajetin__cuerpo { display: grid; align-content: start; padding: 18px 20px 16px; min-width: 0; }
+.cajetin__cab { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--linea); }
+.cajetin__iso { width: 30px; height: 30px; display: block; }
+.cajetin__cab h2 { margin: 2px 0 0; font-size: 1.22rem; }
+.cajetin__cab .etiqueta { color: var(--re); }
+.cajetin__hoja { margin: 0; display: grid; justify-items: end; line-height: 1; }
+.cajetin__hoja .etiqueta { font-size: .58rem; color: var(--suave); }
+.cajetin__hoja b { font-size: 2.1rem; font-weight: 280; line-height: .9; }
+.cajetin__de { font-size: .72rem; color: var(--suave); }
+.cajetin__nombre { margin: 12px 0 0; color: var(--tierra); transition: color .6s; }
+.plano.foto .cajetin__nombre { color: var(--re); }
+.plano .sitio__pasos { list-style: none; margin: 0; padding: 0; display: grid; perspective: 700px; }
+.plano .sitio__paso {
+  grid-area: 1 / 1; display: grid; gap: 5px; align-content: start; padding: 6px 0 14px;
+  opacity: 0; visibility: hidden; transform-origin: 50% 100%; transform: rotateX(75deg); backface-visibility: hidden;
+  transition: opacity .35s var(--ease), transform .7s var(--ease), visibility .7s;
+}
+.plano .sitio__paso.activo { opacity: 1; visibility: visible; transform: none; }
+.plano .sitio__paso .cifra { font-size: 2.9rem; line-height: .95; color: var(--re); }
+.plano .sitio__paso b { font-weight: 740; font-stretch: 88%; font-size: 1.1rem; letter-spacing: -.015em; line-height: 1.15; }
+.sitio__texto { color: rgba(31, 42, 27, .72); font-size: .88rem; line-height: 1.45; }
+.plano .sitio__paso small { font-size: .7rem; color: rgba(31, 42, 27, .55); }
+.cajetin__datos { display: flex; flex-wrap: wrap; gap: 6px; padding-top: 12px; border-top: 1px solid var(--linea); }
+.chip-dato {
+  display: inline-flex; align-items: center; gap: 7px; height: 30px; padding: 0 11px; border-radius: 999px; background: #fff;
+  box-shadow: inset 0 0 0 1px var(--linea); font-size: .7rem; font-weight: 620; font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.escala { display: flex; align-items: center; height: 8px; }
+.escala i { display: block; height: 6px; border: 1.5px solid var(--tinta); border-top: 0; transition: width .2s; }
+.coords { font-weight: 560; color: var(--suave); }
+.norte { width: 16px; height: 16px; display: block; }
+.norte path { fill: var(--re); }
+.plano .sitio__capas { position: static; display: flex; flex-wrap: wrap; gap: 4px 12px; padding: 10px 0 0; }
+.plano .sitio__capas label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: .7rem; font-weight: 620; color: var(--tinta); }
+.plano .sitio__capas input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.plano .sitio__capas label:has(input:not(:checked)) { color: rgba(31, 42, 27, .4); }
+.plano .sitio__capas label:has(input:not(:checked)) .muestra { opacity: .25; }
+.plano .sitio__capas label:has(input:focus-visible) { outline: 2px solid var(--re); outline-offset: 2px; }
 .muestra { width: 14px; height: 10px; border-radius: 3px; flex: none; }
 .m-parque { background: rgba(176, 208, 122, .75); box-shadow: inset 0 0 0 1.5px #5E8A3A; }
 .m-zec { background: repeating-linear-gradient(45deg, #325220 0 1.5px, transparent 1.5px 4px); box-shadow: inset 0 0 0 1.5px #325220; }
 .m-zepa { background: rgba(155, 107, 71, .14); box-shadow: inset 0 0 0 1.5px #9B6B47; }
 .m-rios { height: 3px; border-radius: 3px; background: #5F93BC; }
-.sitio__pasos { list-style: none; margin: 0; padding: 0; display: grid; }
-.sitio__paso {
-  grid-area: 1 / 1; display: grid; gap: 6px; align-content: start; padding: 16px 16px 14px; border-radius: var(--radio);
-  background: rgba(255, 255, 255, .78); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .85), 0 18px 40px -26px rgba(64, 44, 26, .55);
-  opacity: 0; visibility: hidden; transform: translateY(10px); transition: opacity .45s var(--ease), transform .45s var(--ease), visibility .45s;
-}
-.sitio__paso.activo { opacity: 1; visibility: visible; transform: none; }
-.sitio__paso .cifra { font-size: 2.1rem; line-height: 1; color: var(--re); }
-.sitio__paso b { font-weight: 740; font-stretch: 88%; font-size: 1.2rem; letter-spacing: -.015em; line-height: 1.12; }
-.sitio__texto { color: var(--suave); font-size: .95rem; line-height: 1.45; }
-.sitio__paso small { font-size: .74rem; color: var(--suave); opacity: .85; }
-/* sin JS o sin movimiento: todos los pasos, uno debajo de otro */
-.sitio.quieto .sitio__pasos { gap: 8px; }
-.sitio.quieto .sitio__paso { grid-area: auto; opacity: 1; visibility: visible; transform: none; }
-@media (min-width: 900px) {
-  .sitio { grid-template-columns: 1fr 340px; column-gap: 28px; align-items: center; min-height: 100svh; padding: 48px 0; }
-  .sitio__mapa { aspect-ratio: 16 / 10; max-height: calc(100svh - 96px); }
-  .sitio__paso { padding: 22px 22px 18px; }
-  .sitio__paso .cifra { font-size: 2.8rem; }
-}
+.plano__fuente { position: absolute; left: 40px; bottom: 30px; z-index: 4; max-width: min(46ch, calc(100% - 480px)); margin: 0; font-size: .66rem; line-height: 1.4; color: rgba(31, 42, 27, .55); }
+.plano.foto .plano__fuente { color: rgba(255, 255, 255, .8); text-shadow: 0 1px 4px rgba(0, 0, 0, .4); }
 @media (max-width: 899px) {
-  .sitio { min-height: 100svh; padding: 56px 0 16px; }
-  .sitio__mapa { aspect-ratio: 1 / 1; max-height: 58svh; }
-  .sitio__texto { font-size: .9rem; }
+  .plano { height: 100svh; }
+  .plano__marco { inset: 8px; }
+  .plano__fuente, .coords-celda { display: none; }
+  .plano__cajetin { left: 12px; right: 12px; bottom: 12px; width: auto; grid-template-columns: 40px 1fr; border-radius: 22px; }
+  .corte-hojas { padding-top: 18px; }
+  .corte-hojas__hierba { top: 4px; height: 16px; }
+  .corte-hojas__lista li { min-height: 22px; margin-bottom: -6px; }
+  .estrato .estrato__n { font-size: .78rem; }
+  .estrato__nombre { display: none; }
+  .cajetin__cuerpo { padding: 12px 14px 12px; }
+  .cajetin__cab { gap: 9px; padding-bottom: 9px; }
+  .cajetin__iso { width: 24px; height: 24px; }
+  .cajetin__cab h2 { font-size: 1.02rem; }
+  .cajetin__hoja b { font-size: 1.6rem; }
+  .cajetin__nombre { margin-top: 8px; }
+  .plano .sitio__paso { padding: 4px 0 10px; gap: 3px; }
+  .plano .sitio__paso .cifra { font-size: 2rem; }
+  .plano .sitio__paso b { font-size: .98rem; }
+  .sitio__texto { font-size: .8rem; line-height: 1.38; }
+  .plano .sitio__paso small { display: none; }
+  .cajetin__datos { padding-top: 9px; }
+  .chip-dato { height: 26px; padding: 0 9px; font-size: .66rem; }
+  .plano .sitio__capas { display: none; }
+  #mapa .etq .solo-ancho { display: none; }
 }
+/* vistas aéreas a sangre: de borde a borde de la pantalla, como el plano */
+.ba--sangre { width: 100vw; margin-left: calc(50% - 50vw); border-radius: 0; box-shadow: none; }   /* sigue en 16:9: los rótulos van en % */
+.ba--sangre .chip.izq, .ba--sangre .ver-rotulos { left: max(24px, env(safe-area-inset-left, 0px)); }
+.ba--sangre .chip.der { right: max(24px, env(safe-area-inset-right, 0px)); }
+.ba--sangre .ver-rotulos { top: 20px; }
+.ba--sangre .chip { bottom: 20px; }
+/* hojas de la foto: el cajetín se compacta (sin la leyenda de espacios protegidos, solo los textos de estas hojas) */
+.plano.foto .sitio__capas { display: none; }
+.plano.foto .sitio__paso:not([data-vista="finca"]):not([data-vista="restaurada"]):not([data-vista="propuesta"]) { display: none; }
+/* sin JS o sin movimiento: el mapa arriba y todas las hojas debajo */
+.plano.quieto { height: auto; overflow: visible; }
+.plano.quieto #mapa { position: relative; height: 70svh; }
+.plano.quieto .plano__reticula, .plano.quieto .plano__indice, .plano.quieto .plano__marco { display: none; }
+.plano.quieto .plano__cajetin { position: relative; inset: auto; width: auto; margin: 0 14px 14px; }
+.plano.quieto .sitio__paso { grid-area: auto; opacity: 1; visibility: visible; transform: none; }
+.plano.quieto .plano__fuente { position: static; max-width: none; padding: 0 16px 16px; }
+
 /* el mapa */
 #mapa .comunidad { fill: #FFFFFF; fill-opacity: .7; stroke: #222F1E; stroke-opacity: .55; stroke-width: 1.2; }
 #mapa .parque { fill: #B0D07A; fill-opacity: .55; stroke: #5E8A3A; stroke-width: 1.4; }
@@ -363,14 +461,24 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 #mapa .carretera { fill: none; stroke: #FFFFFF; stroke-width: 3.4; stroke-linecap: round; }
 #mapa .finca { fill: #47782C; fill-opacity: .9; stroke: #fff; stroke-width: 2; }
 #mapa .frente { stroke: #fff; stroke-width: 3; vector-effect: non-scaling-stroke; filter: drop-shadow(0 0 3px rgba(34, 47, 30, .45)); }
-#mapa .linea, #mapa .comunidad, #mapa .parque, #mapa .zec, #mapa .zepa, #mapa .muni, #mapa .rio, #mapa .via, #mapa .via-blanca, #mapa .carretera, #mapa .carretera-borde, #mapa .finca { vector-effect: non-scaling-stroke; }
+#mapa .reticula { fill: none; stroke: #1F2A1B; stroke-opacity: .13; stroke-width: 1; }
+.plano.foto #mapa .reticula { stroke: #fff; stroke-opacity: .28; }
+#mapa .pistachar { fill: url(#trama-pistachar); stroke: #fff; stroke-width: 2; }
+#mapa .caminos { fill: none; stroke: #fff; stroke-width: 1.4; stroke-dasharray: 5 4; stroke-opacity: .9; }
+#mapa .valla-parra { fill: none; stroke: #3E6B26; stroke-width: 4; stroke-linejoin: round; }
+#mapa .valla-parra-luz { fill: none; stroke: #B0D07A; stroke-width: 1.4; stroke-linejoin: round; }
+#mapa .linea, #mapa .comunidad, #mapa .parque, #mapa .zec, #mapa .zepa, #mapa .muni, #mapa .rio, #mapa .via, #mapa .via-blanca, #mapa .carretera, #mapa .carretera-borde, #mapa .finca, #mapa .reticula, #mapa .pistachar, #mapa .caminos, #mapa .valla-parra, #mapa .valla-parra-luz { vector-effect: non-scaling-stroke; }
 #mapa.sin-parque .c-parque, #mapa.sin-zec .c-zec, #mapa.sin-zepa .c-zepa, #mapa.sin-rios .c-rios { display: none; }
-#mapa .etq text { font-family: 'Archivo', system-ui, sans-serif; paint-order: stroke; stroke: #F8F7F2; stroke-width: 3.5px; stroke-linejoin: round; fill: #222F1E; }
+#mapa .etq text { font-family: 'Archivo', system-ui, sans-serif; paint-order: stroke; stroke: #F3F0E6; stroke-width: 3.5px; stroke-linejoin: round; fill: #222F1E; }
 #mapa .etq .nucleo { font-size: 12px; font-weight: 650; }
 #mapa .etq .rotulo { font-size: 11px; font-weight: 600; font-style: italic; fill: #3F6E92; }
 #mapa .etq .rotulo.negro { fill: #222F1E; font-style: normal; }
 #mapa .etq .grande { font-size: 11px; font-weight: 650; letter-spacing: .12em; text-transform: uppercase; fill: rgba(34, 47, 30, .6); }
+#mapa .etq .prop { font-size: 11.5px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; fill: #fff; stroke: rgba(20, 28, 16, .55); stroke-width: 3px; }
+#mapa .etq .prop-sub { font-size: 10.5px; font-weight: 520; fill: #fff; stroke: rgba(20, 28, 16, .55); stroke-width: 3px; }
+#mapa .etq .guia { stroke: #fff; stroke-width: 1.2; }
 #mapa .punto { fill: #222F1E; }
+#mapa .punto-prop { fill: #fff; stroke: #1F2A1B; stroke-width: 1.5; }
 #mapa .marca circle.centro { fill: #47782C; stroke: #fff; stroke-width: 2.5; }
 #mapa .marca circle.onda { fill: none; stroke: #47782C; stroke-width: 2; transform-box: fill-box; transform-origin: center; animation: onda 2s var(--ease) infinite; }
 #mapa .marca rect { fill: #fff; }
@@ -412,33 +520,57 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
     <p class="fuente">Fuente: Proyecto de control arqueológico INF/0218/2023 (GEA Arqueólogos, julio de 2026) y estudio topográfico de la explotación (septiembre de 2023).</p>
   </section>
 
-  <!-- 01 · En su sitio -->
-  <section class="seccion caja" aria-labelledby="t-sitio">
-    <div class="cabeza">
-      <p class="cabeza__num etiqueta"><span>01</span> En su sitio</p>
-      <h2 class="titular cabeza__titular" id="t-sitio" data-entra>Dónde está la finca</h2>
-      <p class="cabeza__entrada">Baja despacio: el mapa va de la Comunidad de Madrid a la finca y enseña los espacios protegidos que la rodean, con sus límites oficiales.</p>
-    </div>
-    <div class="sitio" id="sitio">
-      <figure class="sitio__mapa">
-        <svg id="mapa" viewBox="-25792 -39212 75955 68660" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Mapa: la finca al sur de la Comunidad de Madrid, junto al Jarama, dentro del Parque Regional del Sureste y de la ZEC y la ZEPA de la Red Natura 2000"></svg>
+  <!-- 01 · En su sitio: hoja de proyecto a pantalla completa -->
+  <section class="plano" id="sitio" aria-labelledby="t-sitio">
+    <svg id="mapa" viewBox="-25792 -39212 75955 68660" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Mapa: la finca al sur de la Comunidad de Madrid, junto al Jarama, dentro del Parque Regional del Sureste y de la ZEC y la ZEPA de la Red Natura 2000; al final, la propuesta con el pistachar y la valla con parra"></svg>
+    <svg class="plano__reticula" id="reticula" aria-hidden="true"></svg>
+    <div class="plano__marco" aria-hidden="true"></div>
+    <div class="plano__cajetin">
+      <nav class="corte-hojas" aria-label="Hojas del plano: de la tierra a la vega">
+        <svg class="corte-hojas__hierba" viewBox="0 0 74 22" preserveAspectRatio="none" aria-hidden="true"><path d="M0 22 L2 14 L5 22 L7 9 L10 22 L13 15 L15 22 L18 7 L21 22 L24 13 L26 22 L29 10 L32 22 L35 16 L37 22 L40 6 L43 22 L46 12 L48 22 L51 9 L54 22 L57 14 L59 22 L62 8 L65 22 L68 13 L70 22 L72 10 L74 22 Z"/></svg>
+        <ol class="corte-hojas__lista">
+          <li><button type="button" class="estrato" data-vista="comunidad" style="--c: #8E6242" aria-label="Hoja 01: Situación"><span class="estrato__n cifra">01</span><span class="estrato__nombre">Situación</span></button></li>
+          <li><button type="button" class="estrato" data-vista="parque" style="--c: #A9784F" aria-label="Hoja 02: Parque Regional"><span class="estrato__n cifra">02</span><span class="estrato__nombre">Parque Regional</span></button></li>
+          <li><button type="button" class="estrato" data-vista="natura" style="--c: #C49A6E" aria-label="Hoja 03: Red Natura 2000"><span class="estrato__n cifra">03</span><span class="estrato__nombre">Red Natura 2000</span></button></li>
+          <li><button type="button" class="estrato" data-vista="entorno" style="--c: #CBBFA8" aria-label="Hoja 04: Entorno"><span class="estrato__n cifra">04</span><span class="estrato__nombre">Entorno</span></button></li>
+          <li><button type="button" class="estrato" data-vista="finca" style="--c: #E1CFAF" aria-label="Hoja 05: La gravera hoy"><span class="estrato__n cifra">05</span><span class="estrato__nombre">La gravera hoy</span></button></li>
+          <li><button type="button" class="estrato" data-vista="restaurada" style="--c: #A9CC86" aria-label="Hoja 06: Rellena"><span class="estrato__n cifra">06</span><span class="estrato__nombre">Rellena</span></button></li>
+          <li><button type="button" class="estrato" data-vista="propuesta" style="--c: #6FA44E" aria-label="Hoja 07: La propuesta"><span class="estrato__n cifra">07</span><span class="estrato__nombre">La propuesta</span></button></li>
+        </ol>
+      </nav>
+      <div class="cajetin__cuerpo">
+        <div class="cajetin__cab">
+          <img class="cajetin__iso" src="marca/reverso-iso.svg" alt="" width="28" height="28">
+          <div>
+            <p class="etiqueta">01 · En su sitio</p>
+            <h2 class="titular" id="t-sitio">Dónde está la finca</h2>
+          </div>
+          <p class="cajetin__hoja"><span class="etiqueta">Hoja</span><b class="cifra" id="hoja-n">01</b><span class="cajetin__de">/07</span></p>
+        </div>
+        <p class="cajetin__nombre etiqueta" id="hoja-nombre">Situación</p>
+      <ol class="sitio__pasos">
+        <li class="sitio__paso activo" data-vista="comunidad"><span class="cifra">33,4 km</span><b>Al sur de Madrid</b><span class="sitio__texto">A 33,4 km de la Puerta del Sol en línea recta, en el término municipal de Ciempozuelos, junto a la vega del Jarama. Baja despacio: el plano se acerca hasta la finca.</span></li>
+        <li class="sitio__paso" data-vista="parque"><span class="cifra">100 %</span><b>Dentro del Parque Regional del Sureste</b><span class="sitio__texto">El Parque Regional en torno a los ejes de los cursos bajos de los ríos Manzanares y Jarama, de 31.472 ha. La finca queda entera dentro, en la zona D3, de explotación ordenada de los recursos naturales.</span><small>Límite: MITECO, 2025. Zona D3: proyecto, pág. 6.</small></li>
+        <li class="sitio__paso" data-vista="natura"><span class="cifra">Red Natura 2000</span><b>En una ZEC y una ZEPA</b><span class="sitio__texto">ZEC ES3110006 «Vegas, cuestas y páramos del Sureste de Madrid» y ZEPA ES0000142 «Cortados y cantiles de los ríos Jarama y Manzanares». La finca queda entera dentro de las dos.</span><small>Límites: MITECO, Red Natura 2000, 2025.</small></li>
+        <li class="sitio__paso" data-vista="entorno"><span class="cifra">1,2 km</span><b>Entre la vía y la M-307</b><span class="sitio__texto">A 1,2 km del Jarama y a 3,9 km del centro de Ciempozuelos. La línea de tren Madrid–Valencia pasa pegada a la finca. La parcela está en el ámbito de la Zona Arqueológica de Las Salinas Espartinas, Bien de Interés Cultural desde 2006.</span><small>BIC: Decreto 45/2006 y proyecto, págs. 8 y 22. Su límite no es público, así que no se dibuja.</small></li>
+        <li class="sitio__paso" data-vista="finca"><span class="cifra">32,5 ha</span><b>Hoy, la antigua gravera</b><span class="sitio__texto">Huecos de extracción que en las zonas más explotadas llegan a unos 15 m por debajo del terreno original. Sigue bajando para verla llena.</span><small>Proyecto, pág. 17. Ortofoto PNOA 2023, girada como la del capítulo siguiente.</small></li>
+        <li class="sitio__paso" data-vista="restaurada"><span class="cifra">1,97 mill. m³</span><b>Llena, a la cota original</b><span class="sitio__texto">El hueco se rellena hasta la cota que tenía el terreno antes de la extracción y la finca vuelve al uso agrícola.</span><small>Volumen: estudio topográfico (proyecto, pág. 17).</small></li>
+        <li class="sitio__paso" data-vista="propuesta"><span class="cifra">9,6 ha</span><b>Pistachar junto a la vía y valla con parra</b><span class="sitio__texto">En la parte este, de la vía hacia el centro, un pistachar en tres parcelas; el resto, parcelas de cereal orientativas. La valla con parra cierra los 3,0 km del perímetro y la cacera de riego se conserva.</span><small>Propuesta. Perímetro: plano n.º 3 del estudio topográfico.</small></li>
+      </ol>
+        <div class="cajetin__datos">
+          <span class="chip-dato" title="Escala gráfica"><span class="escala"><i id="escala-barra"></i></span><span id="escala-txt">—</span></span>
+          <span class="chip-dato" title="Norte"><svg class="norte" id="norte" viewBox="-13 -13 26 26" aria-hidden="true"><path d="M0 -11 L5 6 L0 3 L-5 6 Z"/></svg>N</span>
+          <span class="chip-dato coords-celda" title="Centro de la vista, UTM 30N (ETRS89)"><span class="coords" id="coords">—</span></span>
+        </div>
         <div class="sitio__capas" role="group" aria-label="Capas del mapa">
           <label><input type="checkbox" data-capa="parque" checked><i class="muestra m-parque"></i>Parque Regional</label>
           <label><input type="checkbox" data-capa="zec" checked><i class="muestra m-zec"></i>ZEC</label>
           <label><input type="checkbox" data-capa="zepa" checked><i class="muestra m-zepa"></i>ZEPA</label>
           <label><input type="checkbox" data-capa="rios" checked><i class="muestra m-rios"></i>Ríos</label>
         </div>
-      </figure>
-      <ol class="sitio__pasos">
-        <li class="sitio__paso activo" data-vista="comunidad"><span class="cifra">33,4 km</span><b>Al sur de Madrid</b><span class="sitio__texto">A 33,4 km de la Puerta del Sol en línea recta, en el término municipal de Ciempozuelos, junto a la vega del Jarama.</span></li>
-        <li class="sitio__paso" data-vista="parque"><span class="cifra">100 %</span><b>Dentro del Parque Regional del Sureste</b><span class="sitio__texto">El Parque Regional en torno a los ejes de los cursos bajos de los ríos Manzanares y Jarama, de 31.472 ha. La finca queda entera dentro, en la zona D3, de explotación ordenada de los recursos naturales.</span><small>Límite: MITECO, 2025. Zona D3: proyecto, pág. 6.</small></li>
-        <li class="sitio__paso" data-vista="natura"><span class="cifra">Red Natura 2000</span><b>En una ZEC y una ZEPA</b><span class="sitio__texto">ZEC ES3110006 «Vegas, cuestas y páramos del Sureste de Madrid» y ZEPA ES0000142 «Cortados y cantiles de los ríos Jarama y Manzanares». La finca queda entera dentro de las dos.</span><small>Límites: MITECO, Red Natura 2000, 2025.</small></li>
-        <li class="sitio__paso" data-vista="entorno"><span class="cifra">1,2 km</span><b>Entre la vía y la M-307</b><span class="sitio__texto">A 1,2 km del Jarama y a 3,9 km del centro de Ciempozuelos. La línea de tren Madrid–Valencia pasa pegada a la finca. La parcela está en el ámbito de la Zona Arqueológica de Las Salinas Espartinas, Bien de Interés Cultural desde 2006.</span><small>BIC: Decreto 45/2006 y proyecto, págs. 8 y 22. Su límite no es público, así que no se dibuja.</small></li>
-        <li class="sitio__paso" data-vista="finca"><span class="cifra">32,5 ha</span><b>Hoy, la antigua gravera</b><span class="sitio__texto">Huecos de extracción que en las zonas más explotadas llegan a unos 15 m por debajo del terreno original. Sigue bajando para verla llena.</span><small>Proyecto, pág. 17. Ortofoto PNOA 2023, girada como la del capítulo siguiente.</small></li>
-        <li class="sitio__paso" data-vista="restaurada"><span class="cifra">1,97 mill. m³</span><b>Llena, a la cota original</b><span class="sitio__texto">El hueco se rellena hasta la cota que tenía el terreno antes de la extracción y la finca queda lista para volver al uso agrícola. Las parcelas que se ven son orientativas.</span><small>Volumen: estudio topográfico (proyecto, pág. 17).</small></li>
-      </ol>
+      </div>
     </div>
-    <p class="pie">Distancias en línea recta. Espacios protegidos: Banco de Datos de la Naturaleza del Ministerio para la Transición Ecológica (diciembre de 2025). Límites municipales, ríos, vía y carreteras: OpenStreetMap. Perímetro de la finca: plano n.º 3 del estudio topográfico. Ortofoto: PNOA 2023 (IGN).</p>
+    <p class="plano__fuente">Distancias en línea recta. Espacios protegidos: Banco de Datos de la Naturaleza del MITECO (diciembre de 2025). Límites municipales, ríos, vía y carreteras: OpenStreetMap. Perímetro: plano n.º 3 del estudio topográfico. Ortofoto: PNOA 2023 (IGN). Cuadrícula: UTM 30N (ETRS89).</p>
   </section>
 
   <!-- 02 · Desde el aire -->
@@ -449,13 +581,14 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
     </div>
 
     <div class="vista">
-      <p class="vista__texto">Toda la franja entre la vía del tren y la M-307 se rellena y queda dividida en parcelas de cultivo con sus caminos. La hilera de árboles de la cacera de riego se conserva.</p>
-      <figure class="ba" id="ba-aerea">
+      <p class="vista__texto">Toda la franja entre la vía del tren y la M-307 se rellena y queda dividida en parcelas de cultivo con sus caminos. En la parte este, junto a la vía, se planta un pistachar. La hilera de árboles de la cacera de riego se conserva, y todo el perímetro queda cerrado con la valla cubierta de parra.</p>
+      <figure class="ba ba--sangre" id="ba-aerea">
         <img src="img/aerea-antes.jpg" alt="Ortofoto de 2023: antigua gravera con planta de machaqueo, acopios, una charca y matorral entre la vía del tren y la M-307" width="2400" height="1350">
-        <div class="despues"><img src="img/aerea-despues.jpg" alt="La misma vista con la franja rellena y dividida en seis parcelas de cultivo separadas por caminos" width="2400" height="1350"></div>
+        <div class="despues"><img src="img/aerea-despues.jpg" alt="La misma vista con la franja rellena: parcelas de cultivo separadas por caminos, un pistachar en la parte este junto a la vía y el perímetro cerrado con la valla de parra" width="2400" height="1350"></div>
         <svg class="per" viewBox="0 0 6000 3375" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><polygon points="5518,1894 5192,1509 5187,1489 5217,1397 5242,1340 5287,1270 5261,1263 5219,1245 5066,1228 4925,1218 4838,1214 4832,1202 4836,1199 4835,1196 4814,1198 3501,1244 3424,1252 2701,1276 1683,1318 1675,1493 1662,1498 1471,1478 1423,1472 1261,1443 1249,1450 1199,1493 1162,1509 1089,1586 1103,1620 1110,1649 1136,1656 1171,1672 1205,1704 1226,1739 1237,1769 1257,1807 1280,1841 1303,1862 1346,1891 1418,1916 1639,1980 1949,2049 2297,2132 2779,2240 3167,2322 3347,2348 3437,2351 3609,2340 4662,2219 4897,2190 4919,2141"/></svg>
         <div class="rotulos" aria-hidden="true">
           <i class="rot" style="--x:58.3%;--y:36.2%"><span>Vía del tren</span></i>
+          <i class="rot" style="--x:70.8%;--y:43.6%"><span>Pistachar<small>9,6 ha junto a la vía</small></span></i>
           <i class="rot" style="--x:41.7%;--y:65.6%"><span>M-307</span></i>
           <i class="rot" style="--x:66.7%;--y:63.3%"><span>Cacera de riego<small>se conserva</small></span></i>
           <i class="rot" style="--x:18.6%;--y:48.4%"><span>Entrada de camiones<small>M-307, junto a la vía</small></span></i>
@@ -506,7 +639,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
         <div class="despues">
           <img src="img/corte-despues.jpg" alt="La misma maqueta restaurada: el hueco relleno, en gris en la cara del corte, y la superficie convertida en parcelas de cultivo" width="2400" height="1350">
           <div class="rotulos" aria-hidden="true">
-            <i class="rot izq" style="--x:32.6%;--y:58.4%"><span>Relleno<small>tierras y materiales inertes</small></span></i>
+            <i class="rot" style="--x:38%;--y:56%"><span>Relleno<small>tierras y materiales inertes</small></span></i>
             <i class="rot" style="--x:61.9%;--y:38.6%"><span>Tierra vegetal y cultivo<small>a la cota original</small></span></i>
           </div>
         </div>
@@ -563,7 +696,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
       <h3>Desde los cerros, hacia la vega del Jarama</h3>
       <figure class="ba" id="ba-dron">
         <img src="img/dron-antes.jpg" alt="Vista 3D de dron del terreno actual: la gravera entre la vía y la carretera, con la vega del Jarama al fondo" width="2400" height="1350">
-        <div class="despues"><img src="img/dron-despues.jpg" alt="La misma vista con la franja convertida en parcelas de cultivo" width="2400" height="1350"></div>
+        <div class="despues"><img src="img/dron-despues.jpg" alt="La misma vista con la franja convertida en parcelas de cultivo, el pistachar junto a la vía y la valla con parra alrededor" width="2400" height="1350"></div>
         <div class="rotulos" aria-hidden="true">
           <i class="rot" style="--x:71.9%;--y:63.9%"><span>Vía del tren</span></i>
           <i class="rot" style="--x:31.8%;--y:38.7%"><span>M-307</span></i>
@@ -588,7 +721,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
       <h3>Desde la entrada de la M-307</h3>
       <figure class="ba" id="ba-entrada3d">
         <img src="img/entrada3d-antes.jpg" alt="Vista 3D desde la entrada sur: la gravera entre la vía y la M-307, con los cerros al fondo" width="2400" height="1350">
-        <div class="despues"><img src="img/entrada3d-despues.jpg" alt="La misma vista con la finca convertida en parcelas de cultivo" width="2400" height="1350"></div>
+        <div class="despues"><img src="img/entrada3d-despues.jpg" alt="La misma vista con la finca convertida en parcelas de cultivo, el pistachar junto a la vía y la valla con parra alrededor" width="2400" height="1350"></div>
         <div class="rotulos" aria-hidden="true">
           <i class="rot izq" style="--x:27%;--y:58.6%"><span>Vía del tren</span></i>
           <i class="rot" style="--x:70.7%;--y:60.9%"><span>M-307</span></i>
@@ -620,7 +753,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
       </div>
       <figure class="ba" id="ba-vistas">
         <img src="img/vega3d-antes.jpg" alt="Vista 3D desde la vega: la gravera entre la M-307 y la vía, con los cerros detrás" width="2400" height="1350">
-        <div class="despues"><img src="img/vega3d-despues.jpg" alt="La misma vista con la franja convertida en parcelas de cultivo" width="2400" height="1350"></div>
+        <div class="despues"><img src="img/vega3d-despues.jpg" alt="La misma vista con la franja convertida en parcelas de cultivo, el pistachar junto a la vía y la valla con parra alrededor" width="2400" height="1350"></div>
         <div class="raya" aria-hidden="true"></div>
         <div class="tirador" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l-5 6 5 6M15 6l5 6-5 6"/></svg></div>
         <span class="chip izq etiqueta" aria-hidden="true">Hoy</span>
@@ -689,27 +822,6 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
     </div>
 
     <div class="vista">
-      <h3>Junto a la vía</h3>
-      <p class="vista__texto">Los acopios de piedra y el matorral desaparecen: el campo llega al pie del terraplén de la vía, que sigue quedando por encima.</p>
-      <figure class="ba" id="ba-acopios">
-        <img src="img/acopios-antes.jpg" alt="Foto de la visita: acopios de piedra y matorral en primer plano, con un tren de mercancías en la vía y casas en la loma del fondo" width="2400" height="1349">
-        <div class="despues"><img src="img/acopios-despues.jpg" alt="La misma foto con el suelo convertido en un campo de cereal recién nacido hasta el pie de la vía" width="2400" height="1349"></div>
-        <div class="raya" aria-hidden="true"></div>
-        <div class="tirador" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l-5 6 5 6M15 6l5 6-5 6"/></svg></div>
-        <span class="chip izq etiqueta" aria-hidden="true">Hoy</span>
-        <span class="chip der verde etiqueta" aria-hidden="true">Restaurada</span>
-        <input type="range" min="0" max="100" value="50" step="0.5" aria-label="Comparar la vista junto a la vía hoy y restaurada">
-      </figure>
-      <div class="mandos">
-        <div class="segmento" role="group" aria-label="Vista junto a la vía">
-          <button type="button" data-a="100">Hoy</button>
-          <button type="button" data-a="50" aria-pressed="true">Comparar</button>
-          <button type="button" data-a="0">Restaurada</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="vista">
       <h3>Desde el borde del hueco</h3>
       <p class="vista__texto">La hondonada y el caballón de tierra se rellenan hasta la altura de las parcelas de la vega, que empiezan detrás de la arboleda.</p>
       <figure class="ba" id="ba-vega2">
@@ -752,28 +864,85 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
     </div>
   </section>
 
-  <!-- 05 · Cierre perimetral (aparte) -->
+  <!-- 06 · El pistachar -->
+  <section class="seccion caja" aria-labelledby="t-pistachar">
+    <div class="cabeza">
+      <p class="cabeza__num etiqueta"><span>06</span> El pistachar</p>
+      <h2 class="titular cabeza__titular" id="t-pistachar" data-entra>Pistachos junto a la vía</h2>
+      <p class="cabeza__entrada">En la parte este de la finca, desde la vía del tren hacia el centro, se planta un pistachar de unas 9,6 hectáreas, en tres parcelas separadas por los caminos de la finca.</p>
+    </div>
+    <dl class="medidas">
+      <div class="ficha ficha--verde"><dt class="etiqueta">Superficie</dt><dd class="ficha__dato"><span class="cifra">9,6</span> ha</dd><dd class="ficha__nota">en tres parcelas</dd></div>
+      <div class="ficha"><dt class="etiqueta">Marco de plantación</dt><dd class="ficha__dato"><span class="cifra">7 × 6</span> m</dd><dd class="ficha__nota">filas perpendiculares a la vía</dd></div>
+      <div class="ficha"><dt class="etiqueta">Árboles</dt><dd class="ficha__dato">unos <span class="cifra">2100</span></dd><dd class="ficha__nota">Pistacia vera</dd></div>
+    </dl>
+
+    <div class="vista">
+      <h3>Desde el aire</h3>
+      <p class="vista__texto">Las filas de árboles ocupan la franja junto a la vía; al sur, un camino de tierra separa el pistachar de las parcelas de cereal.</p>
+      <figure class="ba ba--sangre" id="ba-pistachar-aire">
+        <img src="img/pistachar-aire-antes.jpg" alt="Ortofoto de 2023 de la parte este de la finca: la gravera con matorral junto a la vía" width="2400" height="1350">
+        <div class="despues"><img src="img/pistachar-aire-despues.jpg" alt="La misma vista restaurada: tres parcelas de pistachos en filas junto a la vía y, al sur, parcelas de cereal" width="2400" height="1350"></div>
+        <div class="raya" aria-hidden="true"></div>
+        <div class="tirador" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l-5 6 5 6M15 6l5 6-5 6"/></svg></div>
+        <span class="chip izq etiqueta" aria-hidden="true">Hoy</span>
+        <span class="chip der verde etiqueta" aria-hidden="true">Con el pistachar</span>
+        <input type="range" min="0" max="100" value="50" step="0.5" aria-label="Comparar la parte este de la finca hoy y con el pistachar">
+      </figure>
+      <div class="mandos">
+        <div class="segmento" role="group" aria-label="Pistachar desde el aire">
+          <button type="button" data-a="100">Hoy</button>
+          <button type="button" data-a="50" aria-pressed="true">Comparar</button>
+          <button type="button" data-a="0">Con el pistachar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="vista">
+      <h3>A pie de finca</h3>
+      <p class="vista__texto">Junto a la vía, los acopios de piedra y el matorral dejan paso al pistachar: las filas van hacia el terraplén, con la tierra labrada entre ellas.</p>
+      <figure class="ba" id="ba-pistachar">
+        <img src="img/acopios-antes.jpg" alt="Foto de la visita: acopios de piedra y matorral en primer plano, con un tren de mercancías en la vía y casas en la loma del fondo" width="2400" height="1349">
+        <div class="despues"><img src="img/pistachos-despues.jpg" alt="La misma foto con un pistachar en filas que van hacia la vía y tierra labrada entre ellas" width="2400" height="1349"></div>
+        <div class="raya" aria-hidden="true"></div>
+        <div class="tirador" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l-5 6 5 6M15 6l5 6-5 6"/></svg></div>
+        <span class="chip izq etiqueta" aria-hidden="true">Hoy</span>
+        <span class="chip der verde etiqueta" aria-hidden="true">Con el pistachar</span>
+        <input type="range" min="0" max="100" value="50" step="0.5" aria-label="Comparar la vista junto a la vía hoy y con el pistachar">
+      </figure>
+      <div class="mandos">
+        <div class="segmento" role="group" aria-label="Pistachar a pie de finca">
+          <button type="button" data-a="100">Hoy</button>
+          <button type="button" data-a="50" aria-pressed="true">Comparar</button>
+          <button type="button" data-a="0">Con el pistachar</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 · Cierre perimetral (aparte) -->
   <section class="seccion caja" aria-labelledby="t-cierre">
     <div class="cabeza">
-      <p class="cabeza__num etiqueta"><span>06</span> Aparte · Cierre perimetral</p>
-      <h2 class="titular cabeza__titular" id="t-cierre">La finca, cerrada mientras se rellena</h2>
-      <p class="cabeza__entrada">Un murete de hormigón con malla metálica encima rodea la finca, con una puerta corredera en la entrada de camiones de la M-307.</p>
+      <p class="cabeza__num etiqueta"><span>07</span> Aparte · Cierre perimetral</p>
+      <h2 class="titular cabeza__titular" id="t-cierre">La finca, cerrada y cubierta de parra</h2>
+      <p class="cabeza__entrada">Un murete de hormigón con malla metálica encima rodea la finca, con una puerta corredera en la entrada de camiones de la M-307. Por toda la malla sube una parra con su uva, que deja ver los postes y el murete.</p>
     </div>
     <dl class="medidas">
       <div class="ficha"><dt class="etiqueta">Murete de hormigón</dt><dd class="ficha__dato"><span class="cifra">0,80</span> m</dd><dd class="ficha__nota">de alto, 20 cm de grueso</dd></div>
       <div class="ficha"><dt class="etiqueta">Malla de simple torsión</dt><dd class="ficha__dato">hasta <span class="cifra">2,00</span> m</dd><dd class="ficha__nota">sobre el terreno, en verde</dd></div>
       <div class="ficha"><dt class="etiqueta">Postes de acero</dt><dd class="ficha__dato">cada <span class="cifra">3</span> m</dd><dd class="ficha__nota">en el mismo verde</dd></div>
+      <div class="ficha"><dt class="etiqueta">Parra</dt><dd class="ficha__dato"><span class="cifra">3,0</span> km</dd><dd class="ficha__nota">enredada en toda la malla</dd></div>
       <div class="ficha ficha--verde"><dt class="etiqueta">Puerta corredera</dt><dd class="ficha__dato"><span class="cifra">8</span> m</dd><dd class="ficha__nota">en la entrada de camiones</dd></div>
     </dl>
 
     <div class="vista">
       <h3>Así es un tramo</h3>
-      <p class="vista__texto">De cerca, al pie del terraplén de la vía: el murete de hormigón abajo y la malla verde encima, tensada entre postes.</p>
+      <p class="vista__texto">De cerca, al pie del terraplén de la vía: el murete de hormigón abajo y, encima, la malla tensada entre postes con la parra enredada.</p>
       <figure class="fijo" id="tramo">
-        <img src="img/valla-tramo.jpg" alt="Primer plano del cierre: murete de hormigón gris, postes verdes y malla de simple torsión verde, con la finca detrás" width="2400" height="1350">
+        <img src="img/valla-tramo.jpg" alt="Primer plano del cierre: murete de hormigón gris y postes verdes, con la malla cubierta por una parra con racimos de uva" width="2400" height="1350">
         <div class="rotulos" aria-hidden="true">
           <i class="rot" style="--x:28%;--y:28%"><span>Poste de acero<small>cada 3 m</small></span></i>
-          <i class="rot" style="--x:60%;--y:16%"><span>Malla de simple torsión<small>hasta 2,00 m sobre el terreno</small></span></i>
+          <i class="rot" style="--x:60%;--y:16%"><span>Malla con parra<small>hasta 2,00 m sobre el terreno</small></span></i>
           <i class="rot" style="--x:68%;--y:86%"><span>Murete de hormigón<small>0,80 m de alto</small></span></i>
         </div>
       </figure>
@@ -781,15 +950,15 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 
     <div class="vista">
       <h3>Desde la vía</h3>
-      <p class="vista__texto">El cierre al pie del terraplén de la vía, con la finca detrás.</p>
+      <p class="vista__texto">El cierre al pie del terraplén de la vía, con la parra a lo largo de toda la malla.</p>
       <figure class="par revela" id="rev-via">
         <div class="revela__lienzo">
           <img src="img/valla-via-hoy.jpg" alt="Foto desde el terraplén de la vía: la finca con matorral y una alambrada vieja" width="2400" height="1349">
           <div class="revela__b">
-            <img src="img/valla-via-con.jpg" alt="La misma vista con el murete de hormigón y la malla verde al pie del terraplén" width="2400" height="1349">
+            <img src="img/valla-via-con.jpg" alt="La misma vista con el murete de hormigón y la malla cubierta de parra al pie del terraplén, a lo largo de toda la valla" width="2400" height="1349">
             <div class="rotulos" aria-hidden="true">
               <i class="rot" style="--x:55%;--y:64%"><span>Poste de acero<small>cada 3 m</small></span></i>
-              <i class="rot izq" style="--x:24%;--y:74%"><span>Malla de simple torsión<small>hasta 2,00 m</small></span></i>
+              <i class="rot izq" style="--x:24%;--y:74%"><span>Malla con parra<small>hasta 2,00 m</small></span></i>
               <i class="rot" style="--x:25%;--y:92%"><span>Murete de hormigón<small>0,80 m</small></span></i>
             </div>
           </div>
@@ -811,12 +980,12 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
         <div class="revela__lienzo">
           <img src="img/valla-entrada-hoy.jpg" alt="Fotograma de vídeo: la salida de la finca a la carretera, con camino de tierra, una puerta vieja y un poste de madera" width="576" height="1024">
           <div class="revela__b">
-            <img src="img/valla-entrada-con.jpg" alt="La misma salida arreglada: camino de zahorra hasta la puerta corredera, césped y setos a los lados del murete, y el cartel de Reverso junto a la puerta" width="1080" height="1935">
+            <img src="img/valla-entrada-con.jpg" alt="La misma salida arreglada: camino de zahorra hasta la puerta corredera, césped y setos a los lados del murete, la malla cubierta de parra y el cartel de Reverso junto a la puerta" width="1080" height="1935">
           </div>
           <button type="button" class="punto" data-n="1" style="--x:50%;--y:51%" aria-label="1, puerta corredera">1</button>
           <button type="button" class="punto" data-n="2" style="--x:23.5%;--y:40%" aria-label="2, cartel de Reverso">2</button>
           <button type="button" class="punto" data-n="3" style="--x:37%;--y:60.5%" aria-label="3, murete de hormigón">3</button>
-          <button type="button" class="punto" data-n="4" style="--x:90%;--y:51%" aria-label="4, malla de simple torsión">4</button>
+          <button type="button" class="punto" data-n="4" style="--x:90%;--y:51%" aria-label="4, malla con parra">4</button>
           <button type="button" class="punto" data-n="5" style="--x:62%;--y:80%" aria-label="5, camino de zahorra">5</button>
           <button type="button" class="punto" data-n="6" style="--x:12%;--y:69%" aria-label="6, césped y setos">6</button>
         </div>
@@ -839,7 +1008,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
           <li><button type="button" data-n="1" aria-pressed="false"><span class="n">1</span><span><b>Puerta corredera</b><small>8 m, para los camiones</small></span></button></li>
           <li><button type="button" data-n="2" aria-pressed="false"><span class="n">2</span><span><b>Cartel de Reverso</b><small>con el teléfono de la entrada de camiones</small></span></button></li>
           <li><button type="button" data-n="3" aria-pressed="false"><span class="n">3</span><span><b>Murete de hormigón</b><small>0,80 m de alto, 20 cm de grueso</small></span></button></li>
-          <li><button type="button" data-n="4" aria-pressed="false"><span class="n">4</span><span><b>Malla verde</b><small>de simple torsión, hasta 2,00 m sobre el terreno</small></span></button></li>
+          <li><button type="button" data-n="4" aria-pressed="false"><span class="n">4</span><span><b>Malla con parra</b><small>de simple torsión, hasta 2,00 m, con la parra enredada</small></span></button></li>
           <li><button type="button" data-n="5" aria-pressed="false"><span class="n">5</span><span><b>Camino de zahorra</b><small>del ancho de la puerta, en vez de tierra</small></span></button></li>
           <li><button type="button" data-n="6" aria-pressed="false"><span class="n">6</span><span><b>Césped y setos bajos</b><small>a los lados de la puerta</small></span></button></li>
         </ol>
@@ -855,6 +1024,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
     <div class="notas">
       <p>Las fotos y la ortofoto son reales. En cada «después» solo se ha cambiado el terreno de la gravera: en la vista aérea, dentro del perímetro del relleno del estudio topográfico; en las fotos, el suelo, conservando los píxeles originales del cielo, los cerros, la vía y la arboleda. El cereal que se ve es orientativo.</p>
       <p>En las fotos, la cota se respeta en relación con lo que se ve: el campo llega al pie del terraplén de la vía, que queda entre 1 y 3 metros por encima, y en el lado de la vega queda a la altura de sus parcelas. La cámara sigue donde se hizo la foto, así que las fotos enseñan el aspecto, no miden alturas; las alturas exactas son las del 3D y el plano de cotas.</p>
+      <p>El pistachar y la parra son propuestas. Los árboles de la vista aérea están dibujados a escala sobre la ortofoto, con un marco de plantación real, y la parra se ha montado tramo a tramo entre los postes de cada foto, para que la valla conserve su altura y su forma.</p>
       <p>El 3D está hecho con el modelo digital del terreno del IGN. La finca restaurada sigue el modelo de reposición del estudio topográfico, curva a curva, y se ha comprobado contra su tabla de perfiles: la diferencia media es de 0,3 metros.</p>
     </div>
   </section>
@@ -870,6 +1040,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 <script src="js/gsap.min.js"></script>
 <script src="js/ScrollTrigger.min.js"></script>
 <script src="js/mapa-datos.js"></script>
+<script src="js/propuesta-datos.js"></script>
 <script src="js/mapa.js"></script>
 <script src="js/finca.js"></script>
 </body>
